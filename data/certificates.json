@@ -1,0 +1,35 @@
+[
+  {
+    "certNumber": "GTEC-2025-KL-8910",
+    "studentName": "Akhil S.",
+    "course": "Python Full Stack Development",
+    "grade": "A+ (Distinction)",
+    "issueDate": "2025-11-20",
+    "center": "Tripunithura Campus (Code: KL-TRP-042)",
+    "status": "Verified & Valid",
+    "duration": "6 Months",
+    "accreditation": "ISO 9001:2015 & NSDC Aligned"
+  },
+  {
+    "certNumber": "GTEC-2026-TR-1024",
+    "studentName": "Reshma N.",
+    "course": "DIA - Diploma in International Accounting",
+    "grade": "A (Distinction)",
+    "issueDate": "2026-02-15",
+    "center": "Tripunithura Campus (Code: KL-TRP-042)",
+    "status": "Verified & Valid",
+    "duration": "6 Months",
+    "accreditation": "Tally Education Authorized & ISO 9001:2015"
+  },
+  {
+    "certNumber": "GTEC-2025-TR-3391",
+    "studentName": "Vishnu Kumar",
+    "course": "Master Diploma in Architectural CADD & BIM",
+    "grade": "A+ (Distinction)",
+    "issueDate": "2025-10-05",
+    "center": "Tripunithura Campus (Code: KL-TRP-042)",
+    "status": "Verified & Valid",
+    "duration": "6 Months",
+    "accreditation": "Autodesk Authorized Training & G-CADD"
+  }
+]
