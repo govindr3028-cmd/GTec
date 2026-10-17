@@ -312,7 +312,7 @@
         <button class="modal-close-btn" id="closeEnquiryModal" aria-label="Close modal">&times;</button>
       </div>
       <div class="modal-body-custom">
-        <form id="popupEnquiryForm">
+        <form id="modalEnquiryForm">
           <input type="hidden" name="course" id="modalCourseHidden" value="General Enquiry">
           <div class="form-group" style="margin-bottom: 15px;">
             <label class="form-label">Full Name *</label>
@@ -355,7 +355,7 @@
     let searchQuery = '';
     let currentLightboxIndex = 0;
 
-    document.addEventListener('DOMContentLoaded', async () => {
+    async function initGalleryPage() {
       const grid = document.getElementById('galleryGrid');
       const countEl = document.getElementById('galleryCountStatus');
       const searchInput = document.getElementById('gallerySearchInput');
@@ -389,27 +389,39 @@
       if (nextBtn) nextBtn.addEventListener('click', nextPhoto);
       if (prevBtn) prevBtn.addEventListener('click', prevPhoto);
 
-      lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox();
-      });
+      if (lightbox) {
+        lightbox.addEventListener('click', (e) => {
+          if (e.target === lightbox) closeLightbox();
+        });
+      }
 
       document.addEventListener('keydown', (e) => {
-        if (!lightbox.classList.contains('active')) return;
+        if (!lightbox || !lightbox.classList.contains('active')) return;
         if (e.key === 'Escape') closeLightbox();
         if (e.key === 'ArrowRight') nextPhoto();
         if (e.key === 'ArrowLeft') prevPhoto();
       });
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initGalleryPage);
+    } else {
+      initGalleryPage();
+    }
 
     async function loadGalleryItems() {
+      if (window.GtecGallery && typeof window.GtecGallery.getLocalItems === 'function') {
+        allItems = window.GtecGallery.getLocalItems();
+        filterAndRender();
+      }
       try {
         if (window.GtecGallery) {
           allItems = await window.GtecGallery.getAll();
+          filterAndRender();
         }
       } catch (e) {
         console.error('Error fetching gallery items:', e);
       }
-      filterAndRender();
     }
 
     function filterAndRender() {

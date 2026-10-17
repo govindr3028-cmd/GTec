@@ -2,7 +2,7 @@
  * G-TEC Tripunithura - Master Course Database
  * Comprehensive course catalogue with syllabus, tools, duration, and career paths.
  */
-const coursesData = [
+var coursesData = [
   {
     id: "fs-python",
     title: "Python Full Stack Development",
@@ -472,6 +472,12 @@ const coursesData = [
     certifications: ["Google Ads Certified", "HubSpot Certified (Aligned)", "G-TEC Digital Marketing Diploma"]
   }
 ];
+
+if (typeof window !== 'undefined') {
+  if (!window.coursesData || !Array.isArray(window.coursesData) || window.coursesData.length === 0) {
+    window.coursesData = coursesData;
+  }
+}
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = coursesData;

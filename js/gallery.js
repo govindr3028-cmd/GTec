@@ -6,6 +6,16 @@
 
 const DEFAULT_GALLERY_ITEMS = [
   {
+    id: "GAL-43644",
+    title: "GZoom",
+    category: "Campus Life",
+    date: "January 2026",
+    image: "images/gallery/upload-1792219243642.jpg",
+    caption: "Campus activities and live project development at G-TEC Tripunithura.",
+    isHighlight: true,
+    createdAt: "2026-10-17T06:40:43.644+00:00"
+  },
+  {
     id: "GAL-1001",
     title: "Annual Tech Hackathon & Coding Conclave",
     category: "Workshops & Tech",
@@ -105,10 +115,36 @@ const GtecGallery = {
     }
   },
 
+  async fetchApi(endpoint, options = {}) {
+    if (typeof window.safeBackendFetch === 'function') {
+      return window.safeBackendFetch(endpoint, options);
+    }
+    const clean = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+    const port = window.location.port;
+    const isLocalDevPort = port && port !== '8080' && port !== '80' && port !== '443';
+    const host = window.location.hostname || 'localhost';
+    const targetUrl = isLocalDevPort ? `http://${host}:8080${clean}` : clean;
+
+    try {
+      const res = await fetch(targetUrl, options);
+      if (res && res.ok) return res;
+      if (res) return res;
+    } catch (e) {}
+
+    if (isLocalDevPort) {
+      try {
+        const res = await fetch(clean, options);
+        if (res) return res;
+      } catch (e) {}
+    }
+
+    return null;
+  },
+
   async getAll() {
     try {
-      const res = await fetch('/api/gallery', { cache: 'no-cache' });
-      if (res.ok) {
+      const res = await this.fetchApi('/api/gallery', { cache: 'no-cache' });
+      if (res && res.ok) {
         const data = await res.json();
         if (data.success && Array.isArray(data.items)) {
           this.saveLocalItems(data.items);
@@ -131,12 +167,12 @@ const GtecGallery = {
   async add(item) {
     let newItem = null;
     try {
-      const res = await fetch('/api/gallery', {
+      const res = await this.fetchApi('/api/gallery', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(item)
       });
-      if (res.ok) {
+      if (res && res.ok) {
         const data = await res.json();
         if (data.success && data.item) {
           newItem = data.item;
@@ -168,12 +204,12 @@ const GtecGallery = {
   async update(id, updates) {
     let updatedItem = null;
     try {
-      const res = await fetch(`/api/gallery/${id}`, {
+      const res = await this.fetchApi(`/api/gallery/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
       });
-      if (res.ok) {
+      if (res && res.ok) {
         const data = await res.json();
         if (data.success && data.item) {
           updatedItem = data.item;
@@ -195,7 +231,7 @@ const GtecGallery = {
 
   async delete(id) {
     try {
-      await fetch(`/api/gallery/${id}`, { method: 'DELETE' });
+      await this.fetchApi(`/api/gallery/${id}`, { method: 'DELETE' });
     } catch (e) {
       console.warn('Backend delete offline fallback:', e);
     }

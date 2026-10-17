@@ -100,8 +100,20 @@
       `;
 
       try {
-        const res = await fetch(`/api/verify/${encodeURIComponent(code)}`);
-        const data = await res.json();
+        let res = null;
+        try {
+          res = await fetch(`/api/verify/${encodeURIComponent(code)}`);
+          if (res.status === 404 && window.location.port !== '8080') res = null;
+        } catch (e) {}
+
+        if (!res) {
+          const host = window.location.hostname || 'localhost';
+          try {
+            res = await fetch(`http://${host}:8080/api/verify/${encodeURIComponent(code)}`);
+          } catch (e) {}
+        }
+
+        const data = res ? await res.json() : null;
 
         if (data.success && data.data) {
           const c = data.data;

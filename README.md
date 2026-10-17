@@ -18,7 +18,7 @@ A complete, production-ready full-stack website for **G-TEC Computer Education, 
 
 2. **Backend Architecture:**
    - **Node.js / Express Server (`server.js`)**: Production-ready REST APIs.
-   - **Persistent Storage (`db.js` & `data/`)**: Atomic, crash-resilient JSON storage for enquiries, contact messages, and certificate verification records.
+   - **Supabase Cloud Database & Storage (`db.js`, `supabase_schema.sql` & `data/`)**: Supabase PostgreSQL cloud database with seamless local JSON mirror backup for zero downtime and zero data loss. See [`SUPABASE_SETUP.md`](file:///Users/govind/GTec%20/SUPABASE_SETUP.md).
    - **Alternative PHP APIs (`api/`)**: `enquiry.php` and `contact.php` for standard cPanel / LAMP hosting environments.
 
 3. **Rest API Endpoints:**
@@ -61,12 +61,14 @@ The administration portal is separated from the public gallery and website so th
 
 - **Direct URL:** [http://localhost:8080/admin](http://localhost:8080/admin) (or `admin.html`)
 - **Footer Link:** Click the **🔒 Staff Portal** link in the footer bottom bar of any page.
-- **Default Login Credentials:**
-  - **Username:** `admin` *(or `staff`, `gtec`)*
-  - **Password:** `gtec2026` *(or `admin`, `admin123`)*
+- **Admin Credentials & Security:**
+  - Initial administrator access is supported, and administrators can change username and password directly from the Admin Portal via the **"Change Credentials"** button or **Security & Credentials** tab.
+  - Credential hints and plaintext passwords are completely hidden from the public website, dashboard counters, and client code.
+  - Passwords are securely hashed with PBKDF2 encryption with zero risk to student leads, courses, or gallery data.
 - **Admin Capabilities:**
   - **Admissions & Leads:** Filter, search, call, direct WhatsApp chat, update status, and export to CSV.
   - **Gallery & Carousel Manager:** Add new event photos (file upload or URL), preview, toggle Home Carousel highlights, and 1-click delete photos without code edits.
+  - **Security & Credentials:** Update admin username and password securely with current password confirmation.
 
 👉 **For the comprehensive admin documentation, refer to [ADMIN_README.md](ADMIN_README.md).**
 

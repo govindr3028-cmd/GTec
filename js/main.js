@@ -3,7 +3,7 @@
  * Core Interactions, Dynamic Components, and Full-Stack APIs
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+function initAll() {
   initNavbar();
   initStatsCounters();
   initHeroVideo();
@@ -16,7 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initEnquiryModal();
   initContactForms();
   initScrollEffects();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAll);
+} else {
+  initAll();
+}
 
 /* -------------------------------------------------------------
    Navigation & Mobile Menu
@@ -43,6 +49,16 @@ function initNavbar() {
       if (!navMenu.contains(e.target) && !toggleBtn.contains(e.target) && navMenu.classList.contains('open')) {
         navMenu.classList.remove('open');
       }
+    });
+
+    // Close menu when non-dropdown links are clicked on mobile
+    const allLinks = navMenu.querySelectorAll('a.nav-link, a.dropdown-item');
+    allLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768 && !link.parentElement.classList.contains('has-dropdown')) {
+          navMenu.classList.remove('open');
+        }
+      });
     });
 
     const dropdownItems = document.querySelectorAll('.nav-item.has-dropdown');
@@ -86,18 +102,22 @@ function initStatsCounters() {
     });
   };
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !animated) {
-        animated = true;
-        runAnimation();
-      }
-    });
-  }, { threshold: 0.3 });
+  if (typeof IntersectionObserver !== 'undefined') {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !animated) {
+          animated = true;
+          runAnimation();
+        }
+      });
+    }, { threshold: 0.3 });
 
-  const statsSection = document.querySelector('.stats-section');
-  if (statsSection) {
-    observer.observe(statsSection);
+    const statsSection = document.querySelector('.stats-section');
+    if (statsSection) {
+      observer.observe(statsSection);
+    }
+  } else {
+    runAnimation();
   }
 }
 
@@ -105,35 +125,45 @@ function initStatsCounters() {
     Hero Event & Examination Links Manager (Above Carousel)
 ------------------------------------------------------------- */
 
-// Helper: Dual-endpoint fetch with local 8080 fallback for Live Server
-async function safeFetchEventApi(endpoint, options = {}) {
-  const host = window.location.hostname || 'localhost';
-  const backendBase = `http://${host}:8080`;
+function getSafeApiUrl(endpoint) {
+  const clean = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+  if (typeof window !== 'undefined' && window.location) {
+    if (window.location.protocol === 'file:') {
+      return `http://localhost:8080${clean}`;
+    }
+    const port = window.location.port;
+    if (port && port !== '8080' && port !== '80' && port !== '443') {
+      const host = window.location.hostname || 'localhost';
+      return `http://${host}:8080${clean}`;
+    }
+  }
+  return clean;
+}
 
-  // If already on port 8080, direct relative fetch works
-  if (window.location.port === '8080') {
-    try {
-      const res = await fetch(endpoint, options);
-      if (res.ok) return res;
-    } catch (e) {}
-    return null;
+async function safeBackendFetch(endpoint, options = {}) {
+  const targetUrl = getSafeApiUrl(endpoint);
+
+  try {
+    const res = await fetch(targetUrl, options);
+    if (res && res.ok) return res;
+    if (res) return res;
+  } catch (e) {
+    console.warn('[Network] Direct fetch failed for:', targetUrl);
   }
 
-  // If on another port (e.g. Live Server 5500/5502), try relative first
-  try {
-    const res = await fetch(endpoint, options);
-    if (res.status !== 404 && res.ok) return res;
-  } catch (e) {}
-
-  // Fallback to Express backend on port 8080
-  try {
-    const fallbackUrl = backendBase + (endpoint.startsWith('/') ? endpoint : '/' + endpoint);
-    const res = await fetch(fallbackUrl, options);
-    if (res.ok) return res;
-  } catch (e) {}
+  // Fallback to relative URL if target was absolute
+  if (targetUrl.startsWith('http://') || targetUrl.startsWith('https://')) {
+    try {
+      const clean = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+      const res = await fetch(clean, options);
+      if (res) return res;
+    } catch (err) {}
+  }
 
   return null;
 }
+window.safeBackendFetch = safeBackendFetch;
+const safeFetchEventApi = safeBackendFetch;
 
 // Global Toast Alert Helper
 let gtecToastTimeout = null;
@@ -168,91 +198,101 @@ async function initHeroEventLinks() {
   const countEl = document.getElementById('heroEventLinksCount');
   if (!container) return;
 
-  let links = null;
+  function renderEventLinks(linksList) {
+    const activeLinks = (linksList || []).filter(l => l && l.active !== false);
+    if (countEl) countEl.textContent = `${activeLinks.length} Active`;
 
+    if (activeLinks.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 22px 14px; color: var(--text-muted); font-size: 0.85rem; background: #f8fafc; border-radius: var(--radius-md); border: 1px dashed #cbd5e1;">
+          <i class="fa-solid fa-calendar-check" style="color: #94a3b8; font-size: 1.6rem; margin-bottom: 8px; display: block;"></i>
+          <span style="font-weight: 600; color: #475569;">No active examination or event links right now.</span>
+          <p style="font-size: 0.74rem; color: #94a3b8; margin: 4px 0 0;">New examination schedules and placement drives will be announced here.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = activeLinks.map(item => {
+      const catClass = (item.category || '').toLowerCase().includes('exam') 
+        ? 'cat-examination' 
+        : ((item.category || '').toLowerCase().includes('event') ? 'cat-event' : 'cat-notice');
+        
+      const catIcon = (item.category || '').toLowerCase().includes('exam')
+        ? 'fa-pen-to-square'
+        : ((item.category || '').toLowerCase().includes('event') ? 'fa-calendar-star' : 'fa-bullhorn');
+
+      const cleanTitle = (item.title || '').replace(/"/g, '&quot;');
+
+      return `
+        <div class="hero-event-item" id="hero-event-item-${item.id}">
+          <div class="hero-event-info">
+            <div class="hero-event-tags">
+              <span class="hero-event-category-badge ${catClass}">
+                <i class="fa-solid ${catIcon}"></i> ${item.category || 'Examination'}
+              </span>
+              ${item.badgeText ? `
+                <span class="hero-event-date">
+                  <i class="fa-solid fa-clock"></i> ${item.badgeText}
+                </span>
+              ` : ''}
+            </div>
+            <h4 class="hero-event-title" title="${cleanTitle}">
+              ${item.title}
+            </h4>
+            ${item.description ? `<p class="hero-event-desc">${item.description}</p>` : ''}
+          </div>
+          <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hero-event-btn" title="Open ${cleanTitle}">
+            <span>Open Link</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // 1. Immediate initial render from cache or fallback scholarship record
+  let initialLinks = [];
+  const cached = localStorage.getItem('gtec_event_links_cache');
+  if (cached) {
+    try {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        initialLinks = parsed.filter(l => l && l.id !== 'EVT-1001' && l.id !== 'EVT-1002');
+      }
+    } catch (e) {}
+  }
+  if (initialLinks.length === 0) {
+    initialLinks = [{
+      id: "EVT-43342",
+      title: "G-TEC National Scholarship Exam 2026",
+      url: "https://gteceducation.com/scholarship",
+      category: "Examination",
+      badgeText: "Registrations Open",
+      description: "Online scholarship exam with up to 50% fee concession for IT & Accounting.",
+      active: true
+    }];
+  }
+  let currentLinksSig = initialLinks.map(l => `${l.id}_${l.title}_${l.active}`).join('|');
+  renderEventLinks(initialLinks);
+
+  // 2. Fetch fresh live event links from Supabase Cloud API in background (update only if changed)
   try {
     const res = await safeFetchEventApi('/api/event-links');
     if (res && res.ok) {
       const data = await res.json();
       if (data && data.success && Array.isArray(data.links)) {
-        links = data.links.filter(l => l && l.id !== 'EVT-1001' && l.id !== 'EVT-1002');
-        localStorage.setItem('gtec_event_links_cache', JSON.stringify(links));
+        const fresh = data.links.filter(l => l && l.id !== 'EVT-1001' && l.id !== 'EVT-1002');
+        const freshSig = fresh.map(l => `${l.id}_${l.title}_${l.active}`).join('|');
+        localStorage.setItem('gtec_event_links_cache', JSON.stringify(fresh));
+        if (freshSig !== currentLinksSig) {
+          currentLinksSig = freshSig;
+          renderEventLinks(fresh);
+        }
       }
     }
   } catch (err) {
     console.log('Using local/cached event links...');
   }
-
-  // Fallback to local cache if server was offline/unreachable
-  if (links === null) {
-    const cached = localStorage.getItem('gtec_event_links_cache');
-    if (cached) {
-      try {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed)) {
-          links = parsed.filter(l => l && l.id !== 'EVT-1001' && l.id !== 'EVT-1002');
-        }
-      } catch (e) {}
-    }
-  }
-
-  if (!links) {
-    links = [];
-  }
-
-  // Filter only active links for public hero display
-  const activeLinks = links.filter(l => l.active !== false);
-
-  if (countEl) {
-    countEl.textContent = `${activeLinks.length} Active`;
-  }
-
-  if (activeLinks.length === 0) {
-    container.innerHTML = `
-      <div style="text-align: center; padding: 22px 14px; color: var(--text-muted); font-size: 0.85rem; background: #f8fafc; border-radius: var(--radius-md); border: 1px dashed #cbd5e1;">
-        <i class="fa-solid fa-calendar-check" style="color: #94a3b8; font-size: 1.6rem; margin-bottom: 8px; display: block;"></i>
-        <span style="font-weight: 600; color: #475569;">No active examination or event links right now.</span>
-        <p style="font-size: 0.74rem; color: #94a3b8; margin: 4px 0 0;">New examination schedules and placement drives will be announced here.</p>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = activeLinks.map(item => {
-    const catClass = (item.category || '').toLowerCase().includes('exam') 
-      ? 'cat-examination' 
-      : ((item.category || '').toLowerCase().includes('event') ? 'cat-event' : 'cat-notice');
-      
-    const catIcon = (item.category || '').toLowerCase().includes('exam')
-      ? 'fa-pen-to-square'
-      : ((item.category || '').toLowerCase().includes('event') ? 'fa-calendar-star' : 'fa-bullhorn');
-
-    const cleanTitle = (item.title || '').replace(/"/g, '&quot;');
-
-    return `
-      <div class="hero-event-item" id="hero-event-item-${item.id}">
-        <div class="hero-event-info">
-          <div class="hero-event-tags">
-            <span class="hero-event-category-badge ${catClass}">
-              <i class="fa-solid ${catIcon}"></i> ${item.category || 'Examination'}
-            </span>
-            ${item.badgeText ? `
-              <span class="hero-event-date">
-                <i class="fa-solid fa-clock"></i> ${item.badgeText}
-              </span>
-            ` : ''}
-          </div>
-          <h4 class="hero-event-title" title="${cleanTitle}">
-            ${item.title}
-          </h4>
-          ${item.description ? `<p class="hero-event-desc">${item.description}</p>` : ''}
-        </div>
-        <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hero-event-btn" title="Open ${cleanTitle}">
-          <span>Open Link</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
-        </a>
-      </div>
-    `;
-  }).join('');
 }
 
 /* -------------------------------------------------------------
@@ -268,95 +308,16 @@ async function initHeroGalleryCarousel() {
 
   if (!card || !track) return;
 
-  let items = [];
-  try {
-    if (window.GtecGallery) {
-      items = await window.GtecGallery.getHighlights();
-    }
-  } catch (err) {
-    console.warn('Error fetching gallery highlights:', err);
-  }
-
-  if (!items || items.length === 0) {
-    track.innerHTML = `
-      <div class="hero-gallery-loading-placeholder">
-        <i class="fa-solid fa-camera"></i> No event highlights yet. Visit our Gallery tab.
-      </div>
-    `;
-    return;
-  }
-
-  // Enable Netflix-style sliding
-  track.classList.add('netflix-sliding');
-
-  // Render slides
-  track.innerHTML = items.map((item, idx) => `
-    <div class="hero-gallery-slide ${idx === 0 ? 'active' : ''}" data-index="${idx}">
-      <img src="${item.image}" alt="${(item.title || '').replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='images/gtec.png'; this.style.objectFit='contain';">
-      <div class="hero-gallery-slide-scrim"></div>
-      <div class="hero-gallery-slide-meta">
-        <span class="hero-gallery-slide-tag"><i class="fa-solid fa-tag"></i> ${item.category}</span>
-        <h4 class="hero-gallery-slide-title">${item.title}</h4>
-        <div class="hero-gallery-slide-sub">
-          <span><i class="fa-regular fa-calendar"></i> ${item.date}</span>
-          ${item.caption ? `<span><i class="fa-solid fa-circle-info"></i> ${item.caption.length > 55 ? item.caption.slice(0, 55) + '...' : item.caption}</span>` : ''}
-        </div>
-      </div>
-    </div>
-  `).join('');
-
-  // Render Netflix segmented progress bars
-  if (progressContainer) {
-    progressContainer.innerHTML = items.map((_, idx) => `
-      <div class="netflix-progress-segment ${idx === 0 ? 'active' : ''}" data-index="${idx}" title="Slide ${idx + 1} of ${items.length}">
-        <span class="netflix-progress-fill"></span>
-      </div>
-    `).join('');
-  }
-
   let currentIndex = 0;
-  const totalSlides = items.length;
-  const slideDuration = 3500; // 3.5s per slide like Netflix
+  let totalSlides = 0;
+  const slideDuration = 3500;
   let autoPlayTimer = null;
   let isHovered = false;
 
-  function updateCarousel(index, restartTimer = true) {
-    currentIndex = (index + totalSlides) % totalSlides;
-    track.style.transform = `translateX(-${currentIndex * 100}%)`;
-
-    // Update active class on slides for subtle zoom
-    const slides = track.querySelectorAll('.hero-gallery-slide');
-    slides.forEach((s, i) => {
-      s.classList.toggle('active', i === currentIndex);
-    });
-
-    // Update Netflix segmented progress bars
-    if (progressContainer) {
-      const segments = progressContainer.querySelectorAll('.netflix-progress-segment');
-      segments.forEach((seg, i) => {
-        seg.classList.remove('active', 'completed');
-        const fill = seg.querySelector('.netflix-progress-fill');
-        if (fill) {
-          fill.style.animation = 'none';
-          void fill.offsetWidth; // Force CSS reflow to cleanly restart the animation
-        }
-        if (i < currentIndex) {
-          seg.classList.add('completed');
-          if (fill) fill.style.animation = '';
-        } else if (i === currentIndex) {
-          seg.classList.add('active');
-          if (fill) fill.style.animation = '';
-        }
-      });
-    }
-
-    // Update counter
-    if (counterEl) {
-      counterEl.textContent = `${currentIndex + 1} / ${totalSlides}`;
-    }
-
-    if (restartTimer) {
-      startAutoPlay();
+  function stopAutoPlay() {
+    if (autoPlayTimer) {
+      clearTimeout(autoPlayTimer);
+      autoPlayTimer = null;
     }
   }
 
@@ -369,49 +330,118 @@ async function initHeroGalleryCarousel() {
     }
   }
 
-  function stopAutoPlay() {
-    if (autoPlayTimer) {
-      clearTimeout(autoPlayTimer);
-      autoPlayTimer = null;
+  function updateCarousel(index, restartTimer = true) {
+    if (totalSlides === 0) return;
+    currentIndex = (index + totalSlides) % totalSlides;
+    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+    const slides = track.querySelectorAll('.hero-gallery-slide');
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === currentIndex);
+    });
+
+    if (progressContainer) {
+      const segments = progressContainer.querySelectorAll('.netflix-progress-segment');
+      segments.forEach((seg, i) => {
+        seg.classList.remove('active', 'completed');
+        const fill = seg.querySelector('.netflix-progress-fill');
+        if (fill) {
+          fill.style.animation = 'none';
+          void fill.offsetWidth;
+        }
+        if (i < currentIndex) {
+          seg.classList.add('completed');
+          if (fill) fill.style.animation = '';
+        } else if (i === currentIndex) {
+          seg.classList.add('active');
+          if (fill) fill.style.animation = '';
+        }
+      });
+    }
+
+    if (counterEl) {
+      counterEl.textContent = `${currentIndex + 1} / ${totalSlides}`;
+    }
+
+    if (restartTimer) {
+      startAutoPlay();
     }
   }
 
+  function renderCarousel(items) {
+    if (!items || items.length === 0) {
+      track.innerHTML = `
+        <div class="hero-gallery-loading-placeholder">
+          <i class="fa-solid fa-camera"></i> No event highlights yet. Visit our Gallery tab.
+        </div>
+      `;
+      return;
+    }
+
+    totalSlides = items.length;
+    track.classList.add('netflix-sliding');
+
+    track.innerHTML = items.map((item, idx) => `
+      <div class="hero-gallery-slide ${idx === 0 ? 'active' : ''}" data-index="${idx}">
+        <img src="${item.image}" alt="${(item.title || '').replace(/"/g, '&quot;')}" loading="lazy" onerror="this.src='images/gtec.png'; this.style.objectFit='contain';">
+        <div class="hero-gallery-slide-scrim"></div>
+        <div class="hero-gallery-slide-meta">
+          <span class="hero-gallery-slide-tag"><i class="fa-solid fa-tag"></i> ${item.category}</span>
+          <h4 class="hero-gallery-slide-title">${item.title}</h4>
+          <div class="hero-gallery-slide-sub">
+            <span><i class="fa-regular fa-calendar"></i> ${item.date}</span>
+            ${item.caption ? `<span><i class="fa-solid fa-circle-info"></i> ${item.caption.length > 55 ? item.caption.slice(0, 55) + '...' : item.caption}</span>` : ''}
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    if (progressContainer) {
+      progressContainer.innerHTML = items.map((_, idx) => `
+        <div class="netflix-progress-segment ${idx === 0 ? 'active' : ''}" data-index="${idx}" title="Slide ${idx + 1} of ${items.length}">
+          <span class="netflix-progress-fill"></span>
+        </div>
+      `).join('');
+    }
+
+    updateCarousel(0, true);
+  }
+
+  // Setup controls once
   if (prevBtn) {
-    prevBtn.addEventListener('click', (e) => {
+    prevBtn.onclick = (e) => {
       e.preventDefault();
       updateCarousel(currentIndex - 1, true);
-    });
+    };
   }
 
   if (nextBtn) {
-    nextBtn.addEventListener('click', (e) => {
+    nextBtn.onclick = (e) => {
       e.preventDefault();
       updateCarousel(currentIndex + 1, true);
-    });
+    };
   }
 
   if (progressContainer) {
-    progressContainer.addEventListener('click', (e) => {
+    progressContainer.onclick = (e) => {
       const seg = e.target.closest('.netflix-progress-segment');
       if (seg) {
         const idx = parseInt(seg.getAttribute('data-index'), 10);
         updateCarousel(idx, true);
       }
-    });
+    };
   }
 
-  // Netflix-style pause on hover
-  card.addEventListener('mouseenter', () => {
+  card.onmouseenter = () => {
     isHovered = true;
     stopAutoPlay();
-  });
+  };
 
-  card.addEventListener('mouseleave', () => {
+  card.onmouseleave = () => {
     isHovered = false;
     startAutoPlay();
-  });
+  };
 
-  // Touch Swipe Support
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -425,17 +455,47 @@ async function initHeroGalleryCarousel() {
     const diff = touchStartX - touchEndX;
     if (Math.abs(diff) > 40) {
       if (diff > 0) {
-        updateCarousel(currentIndex + 1, true); // Swiped left -> next
+        updateCarousel(currentIndex + 1, true);
       } else {
-        updateCarousel(currentIndex - 1, true); // Swiped right -> prev
+        updateCarousel(currentIndex - 1, true);
       }
     } else {
       startAutoPlay();
     }
   }, { passive: true });
 
-  // Initial update and start
-  updateCarousel(0, true);
+  // 1. Initial immediate render from local/cached highlights so user NEVER sees stuck loading state
+  let initialItems = [];
+  if (window.GtecGallery && typeof window.GtecGallery.getLocalItems === 'function') {
+    const local = window.GtecGallery.getLocalItems();
+    initialItems = local.filter(i => i.isHighlight === true || i.isHighlight === 'true');
+    if (initialItems.length === 0) initialItems = local.slice(0, 4);
+  }
+  if (!initialItems || initialItems.length === 0) {
+    if (typeof DEFAULT_GALLERY_ITEMS !== 'undefined') {
+      initialItems = DEFAULT_GALLERY_ITEMS.filter(i => i.isHighlight);
+    }
+  }
+  let currentCarouselSig = (initialItems || []).map(i => `${i.id}_${i.title}_${i.image}`).join('|');
+  if (initialItems && initialItems.length > 0) {
+    renderCarousel(initialItems);
+  }
+
+  // 2. Fetch fresh live highlights from Supabase Cloud API in background (update only if changed)
+  try {
+    if (window.GtecGallery) {
+      const freshHighlights = await window.GtecGallery.getHighlights();
+      if (freshHighlights && freshHighlights.length > 0) {
+        const freshSig = freshHighlights.map(i => `${i.id}_${i.title}_${i.image}`).join('|');
+        if (freshSig !== currentCarouselSig) {
+          currentCarouselSig = freshSig;
+          renderCarousel(freshHighlights);
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Error fetching gallery highlights:', err);
+  }
 }
 
 /* -------------------------------------------------------------
@@ -445,30 +505,22 @@ async function initCoursesGrid() {
   const container = document.getElementById('coursesContainer');
   if (!container) return;
 
-  // Attempt to fetch latest courses from server API or cached storage
-  try {
-    const res = await fetch('/api/courses');
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data.success && Array.isArray(data.courses) && data.courses.length > 0) {
-        window.coursesData = data.courses;
-        localStorage.setItem('gtec_courses_cache', JSON.stringify(data.courses));
-      }
+  const getActiveCourses = () => {
+    if (window.coursesData && Array.isArray(window.coursesData) && window.coursesData.length > 0) {
+      return window.coursesData;
     }
-  } catch (err) {
-    // Fallback to cached courses if server is unreachable
+    if (typeof coursesData !== 'undefined' && Array.isArray(coursesData) && coursesData.length > 0) {
+      return coursesData;
+    }
     const cached = localStorage.getItem('gtec_courses_cache');
     if (cached) {
       try {
         const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          window.coursesData = parsed;
-        }
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       } catch (e) {}
     }
-  }
-
-  if (typeof coursesData === 'undefined' || !Array.isArray(coursesData)) return;
+    return [];
+  };
 
   const filterBtns = document.querySelectorAll('.filter-btn');
   const searchInput = document.getElementById('courseSearchInput');
@@ -476,15 +528,21 @@ async function initCoursesGrid() {
   const countBadge = document.getElementById('coursesCount');
 
   let activeCategory = 'all';
+  if (typeof window !== 'undefined' && window.location && window.location.search) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const catParam = urlParams.get('cat');
+    if (catParam) activeCategory = catParam;
+  }
   let searchTerm = '';
 
   function syncEnquiryCourseDropdown() {
     const selects = document.querySelectorAll('select[name="course"], #enquiryCourseSelect');
-    if (!window.coursesData || !Array.isArray(window.coursesData)) return;
+    const courses = getActiveCourses();
+    if (!courses || !Array.isArray(courses)) return;
     selects.forEach(sel => {
       const currentVal = sel.value;
       const existingOptions = Array.from(sel.options).map(o => o.value);
-      window.coursesData.forEach(c => {
+      courses.forEach(c => {
         if (!existingOptions.includes(c.title)) {
           const opt = document.createElement('option');
           opt.value = c.title;
@@ -497,7 +555,8 @@ async function initCoursesGrid() {
   }
 
   function renderCourses() {
-    let filtered = coursesData.filter(course => {
+    const list = getActiveCourses();
+    let filtered = list.filter(course => {
       const matchesCategory = activeCategory === 'all' || course.category === activeCategory;
       const matchesSearch = !searchTerm || 
         (course.title && course.title.toLowerCase().includes(searchTerm)) || 
@@ -573,7 +632,7 @@ async function initCoursesGrid() {
           <button class="btn-details" onclick="openCourseDetails('${course.id}')">
             Syllabus & Details <i class="fa-solid fa-arrow-right"></i>
           </button>
-          <button class="btn btn-sm btn-secondary" onclick="openEnquiryModal('${course.title}')">
+          <button class="btn btn-sm btn-secondary" onclick="openEnquiryModal('${(course.title || '').replace(/'/g, "\\'")}')">
             Enquire
           </button>
         </div>
@@ -582,55 +641,77 @@ async function initCoursesGrid() {
   }
 
   filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
+    if (activeCategory !== 'all' && btn.getAttribute('data-filter') === activeCategory) {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    btn.onclick = () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeCategory = btn.getAttribute('data-filter') || 'all';
       renderCourses();
-    });
+    };
   });
 
   if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
+    searchInput.oninput = (e) => {
       searchTerm = e.target.value.toLowerCase().trim();
       renderCourses();
-    });
+    };
   }
 
   if (heroSearchInput) {
-    heroSearchInput.addEventListener('keydown', (e) => {
+    heroSearchInput.onkeydown = (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
         searchTerm = heroSearchInput.value.toLowerCase().trim();
         const catalogEl = document.getElementById('coursesCatalog');
-        if (catalogEl) {
-          catalogEl.scrollIntoView({ behavior: 'smooth' });
-        }
-        if (searchInput) {
-          searchInput.value = heroSearchInput.value;
-        }
+        if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth' });
+        if (searchInput) searchInput.value = heroSearchInput.value;
         renderCourses();
       }
-    });
-
+    };
     const heroSearchBtn = document.getElementById('heroSearchBtn');
     if (heroSearchBtn) {
-      heroSearchBtn.addEventListener('click', () => {
+      heroSearchBtn.onclick = () => {
         searchTerm = heroSearchInput.value.toLowerCase().trim();
         const catalogEl = document.getElementById('coursesCatalog');
-        if (catalogEl) {
-          catalogEl.scrollIntoView({ behavior: 'smooth' });
-        }
-        if (searchInput) {
-          searchInput.value = heroSearchInput.value;
-        }
+        if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth' });
+        if (searchInput) searchInput.value = heroSearchInput.value;
         renderCourses();
-      });
+      };
     }
   }
 
+  // 1. Render immediately so user NEVER sees stuck loading text!
   renderCourses();
   syncEnquiryCourseDropdown();
+
+  // 2. Fetch fresh courses from Supabase Cloud in background (only re-render if data differs)
+  try {
+    const res = await safeBackendFetch('/api/courses');
+    if (res && res.ok) {
+      const data = await res.json();
+      if (data && data.success && Array.isArray(data.courses) && data.courses.length > 0) {
+        const currentList = getActiveCourses();
+        const isIdentical = currentList.length === data.courses.length &&
+          currentList.every((c, i) => c.id === data.courses[i].id && c.title === data.courses[i].title);
+
+        window.coursesData = data.courses;
+        if (typeof coursesData !== 'undefined') {
+          try { coursesData = data.courses; } catch (e) {}
+        }
+        localStorage.setItem('gtec_courses_cache', JSON.stringify(data.courses));
+
+        if (!isIdentical) {
+          renderCourses();
+          syncEnquiryCourseDropdown();
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Courses API offline, using local catalog...');
+  }
 }
 
 /* -------------------------------------------------------------
@@ -655,8 +736,20 @@ function initCourseModal() {
 }
 
 window.openCourseDetails = function(courseId) {
-  if (typeof coursesData === 'undefined') return;
-  const course = coursesData.find(c => c.id === courseId);
+  let allCourses = (window.coursesData && Array.isArray(window.coursesData) && window.coursesData.length > 0)
+    ? window.coursesData
+    : (typeof coursesData !== 'undefined' && Array.isArray(coursesData) && coursesData.length > 0 ? coursesData : []);
+  if (!allCourses || allCourses.length === 0) {
+    try {
+      const cached = localStorage.getItem('gtec_courses_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) allCourses = parsed;
+      }
+    } catch (e) {}
+  }
+  if (!allCourses || allCourses.length === 0) return;
+  const course = allCourses.find(c => c.id === courseId);
   if (!course) return;
 
   const modal = document.getElementById('courseDetailModal');
@@ -681,7 +774,8 @@ window.openCourseDetails = function(courseId) {
   if (eligEl) eligEl.textContent = course.eligibility;
 
   if (syllabusList) {
-    syllabusList.innerHTML = course.syllabus.map(mod => `
+    const list = Array.isArray(course.syllabus) ? course.syllabus : [];
+    syllabusList.innerHTML = list.map(mod => `
       <li style="margin-bottom: 8px; display: flex; align-items: flex-start; gap: 8px; font-size: 0.92rem; color: var(--text-main);">
         <i class="fa-solid fa-circle-check" style="color: var(--primary); margin-top: 4px;"></i>
         <span>${mod}</span>
@@ -690,13 +784,15 @@ window.openCourseDetails = function(courseId) {
   }
 
   if (toolsList) {
-    toolsList.innerHTML = course.tools.map(tool => `
+    const list = Array.isArray(course.tools) ? course.tools : [];
+    toolsList.innerHTML = list.map(tool => `
       <span class="tool-pill" style="padding: 5px 12px; font-size: 0.82rem;">${tool}</span>
     `).join('');
   }
 
   if (careersList) {
-    careersList.innerHTML = course.careers.map(car => `
+    const list = Array.isArray(course.careers) ? course.careers : [];
+    careersList.innerHTML = list.map(car => `
       <li style="margin-bottom: 6px; font-size: 0.9rem; color: var(--text-main);">
         <i class="fa-solid fa-briefcase" style="color: var(--secondary); margin-right: 6px;"></i> ${car}
       </li>
@@ -704,7 +800,8 @@ window.openCourseDetails = function(courseId) {
   }
 
   if (certsList) {
-    certsList.innerHTML = (course.certifications || []).map(cert => `
+    const list = Array.isArray(course.certifications) ? course.certifications : [];
+    certsList.innerHTML = list.map(cert => `
       <span class="badge badge-primary" style="font-size: 0.8rem; margin-right: 6px; margin-bottom: 6px;">${cert}</span>
     `).join('');
   }
@@ -803,16 +900,24 @@ function initQuizAdvisor() {
       
       // Try backend recommendation API
       try {
-        const res = await fetch('/api/quiz-recommend', {
+        const res = await safeBackendFetch('/api/quiz-recommend', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ education: userEducation, goal: userGoal })
         });
-        const data = await res.json();
-        if (data.success && data.recommendation) {
-          const rec = data.recommendation;
-          document.getElementById('quizRecTitle').textContent = rec.title;
-          document.getElementById('quizRecDesc').textContent = rec.reason;
+        if (res && res.ok) {
+          const data = await res.json();
+          if (data && data.success && data.recommendation) {
+            const rec = data.recommendation;
+            const titleEl = document.getElementById('quizRecTitle');
+            const descEl = document.getElementById('quizRecDesc');
+            const enquireBtn = document.getElementById('quizRecEnquireBtn');
+            if (titleEl) titleEl.textContent = rec.title;
+            if (descEl) descEl.textContent = rec.reason;
+            if (enquireBtn) enquireBtn.onclick = () => openEnquiryModal(rec.title);
+          } else {
+            fallbackRecommendation(userEducation, userGoal);
+          }
         } else {
           fallbackRecommendation(userEducation, userGoal);
         }
@@ -923,25 +1028,31 @@ function initEnquiryModal() {
 
 window.openEnquiryModal = function(courseName = '') {
   const modal = document.getElementById('enquiryModal');
-  const select = document.getElementById('enquiryCourseSelect');
-  if (modal) {
-    if (select && courseName) {
-      let found = false;
-      for (let i = 0; i < select.options.length; i++) {
-        if (select.options[i].text.toLowerCase().includes(courseName.toLowerCase()) || 
-            select.options[i].value.toLowerCase().includes(courseName.toLowerCase())) {
-          select.selectedIndex = i;
-          found = true;
-          break;
-        }
-      }
-      if (!found && courseName) {
-        const opt = new Option(courseName, courseName, true, true);
-        select.add(opt);
+  if (!modal) return;
+
+  const select = modal.querySelector('#enquiryCourseSelect, select[name="course"]');
+  const hiddenInput = modal.querySelector('#modalCourseHidden, input[name="course"]');
+
+  if (hiddenInput && courseName) {
+    hiddenInput.value = courseName;
+  }
+
+  if (select && courseName) {
+    let found = false;
+    for (let i = 0; i < select.options.length; i++) {
+      if (select.options[i].text.toLowerCase().includes(courseName.toLowerCase()) || 
+          select.options[i].value.toLowerCase().includes(courseName.toLowerCase())) {
+        select.selectedIndex = i;
+        found = true;
+        break;
       }
     }
-    modal.classList.add('show');
+    if (!found && courseName) {
+      const opt = new Option(courseName, courseName, true, true);
+      select.add(opt);
+    }
   }
+  modal.classList.add('show');
 };
 
 /* -------------------------------------------------------------
@@ -960,25 +1071,29 @@ function initContactForms() {
     }
 
     try {
-      const response = await fetch(endpoint, {
+      const response = await safeBackendFetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataObj)
       });
-      const result = await response.json();
+      if (response && response.ok) {
+        const result = await response.json();
 
-      if (submitBtn) {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-      }
+        if (submitBtn) {
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        }
 
-      if (result.success) {
-        showSuccessModal(result.message || 'Thank you! Your submission has been received.', result.enquiryId || result.messageId, dataObj);
-        form.reset();
-        const enquiryModal = document.getElementById('enquiryModal');
-        if (enquiryModal) enquiryModal.classList.remove('show');
+        if (result.success) {
+          showSuccessModal(result.message || 'Thank you! Your submission has been received.', result.enquiryId || result.messageId, dataObj);
+          form.reset();
+          const enquiryModal = document.getElementById('enquiryModal');
+          if (enquiryModal) enquiryModal.classList.remove('show');
+        } else {
+          alert(result.message || 'Submission error. Please try again.');
+        }
       } else {
-        alert(result.message || 'Submission error. Please try again.');
+        throw new Error('Network error or server unavailable');
       }
     } catch (err) {
       // Offline fallback
@@ -1006,6 +1121,14 @@ function initContactForms() {
     modalEnquiryForm.addEventListener('submit', (e) => {
       e.preventDefault();
       submitToBackend(modalEnquiryForm, '/api/enquiries');
+    });
+  }
+
+  const popupEnquiryForm = document.getElementById('popupEnquiryForm');
+  if (popupEnquiryForm && popupEnquiryForm !== modalEnquiryForm) {
+    popupEnquiryForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      submitToBackend(popupEnquiryForm, '/api/enquiries');
     });
   }
 }
@@ -1087,48 +1210,47 @@ function initHeroVideo() {
 
   if (!video) return;
 
-  // Modern browsers require muted attribute & property for automatic playback
   video.muted = true;
-  video.playbackRate = 0.9;
+  video.loop = true;
+
+  const applyPlaybackRate = () => {
+    try { video.playbackRate = 0.9; } catch (e) {}
+  };
+
+  if (video.readyState >= 1) {
+    applyPlaybackRate();
+  } else {
+    video.addEventListener('loadedmetadata', applyPlaybackRate, { once: true });
+  }
 
   // Attempt automatic video playback
   const startAutoplay = () => {
-    video.playbackRate = 0.9;
     const playPromise = video.play();
     if (playPromise !== undefined) {
       playPromise.then(() => {
-        video.playbackRate = 0.9;
+        applyPlaybackRate();
         updatePlayState(true);
       }).catch(err => {
-        console.log('Hero video autoplay waiting for user interaction:', err);
         updatePlayState(false);
 
         // Resume on any first user gesture on the page
         const resumeOnGesture = () => {
-          video.playbackRate = 0.9;
           video.play().then(() => {
-            video.playbackRate = 0.9;
+            applyPlaybackRate();
             updatePlayState(true);
           }).catch(() => {});
           window.removeEventListener('click', resumeOnGesture);
           window.removeEventListener('touchstart', resumeOnGesture);
           window.removeEventListener('scroll', resumeOnGesture);
         };
-        window.addEventListener('click', resumeOnGesture, { once: true });
-        window.addEventListener('touchstart', resumeOnGesture, { once: true });
-        window.addEventListener('scroll', resumeOnGesture, { once: true });
+        window.addEventListener('click', resumeOnGesture, { once: true, passive: true });
+        window.addEventListener('touchstart', resumeOnGesture, { once: true, passive: true });
+        window.addEventListener('scroll', resumeOnGesture, { once: true, passive: true });
       });
     }
   };
 
   startAutoplay();
-
-  // Continuous seamless loop guarantee (ensures repeating playback without stopping)
-  video.addEventListener('ended', () => {
-    video.currentTime = 0;
-    video.playbackRate = 0.9;
-    video.play().catch(() => {});
-  });
 
   function updatePlayState(isPlaying) {
     if (!playToggleBtn) return;

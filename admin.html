@@ -164,6 +164,41 @@
       gap: 12px;
       background: #f8fafc;
     }
+
+    /* Password Input & Security UI Enhancements */
+    .admin-pass-wrap {
+      position: relative;
+    }
+    .admin-pass-wrap input {
+      padding-right: 44px;
+    }
+    .admin-pass-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 6px;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      transition: color 0.15s ease;
+    }
+    .admin-pass-toggle:hover {
+      color: #0f172a;
+    }
+    .admin-security-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 25px;
+    }
+    @media (max-width: 900px) {
+      .admin-security-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -255,6 +290,9 @@
         <button type="button" onclick="exportLeadsCSV()" class="btn btn-sm btn-primary">
           <i class="fa-solid fa-file-csv"></i> Export Leads CSV
         </button>
+        <button type="button" id="adminCredentialsHeaderBtn" onclick="openCredentialsModal()" class="btn btn-sm" style="background: rgba(14, 165, 233, 0.2); color: #7dd3fc; border: 1px solid rgba(14, 165, 233, 0.4); font-weight: 600;" title="Change Admin Username & Password">
+          <i class="fa-solid fa-key"></i> Change Credentials
+        </button>
         <button type="button" id="adminLogoutBtn" class="btn btn-sm" style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); font-weight: 600;" title="Sign out and lock admin portal">
           <i class="fa-solid fa-right-from-bracket"></i> Sign Out
         </button>
@@ -280,6 +318,9 @@
       <button type="button" class="admin-tab-btn" id="tabBtnGallery" onclick="switchAdminTab('gallery')">
         <i class="fa-solid fa-images"></i> Gallery & Carousel Manager
         <span class="tab-badge" id="tabGalleryBadge">7</span>
+      </button>
+      <button type="button" class="admin-tab-btn" id="tabBtnSecurity" onclick="switchAdminTab('security')">
+        <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> Security & Credentials
       </button>
     </div>
 
@@ -694,6 +735,188 @@
     </section>
 
     <!-- =========================================================================
+         SECTION 5: ACCOUNT SECURITY & CREDENTIAL MANAGEMENT
+         ========================================================================= -->
+    <section id="securitySection" style="display: none;">
+      <div class="admin-security-grid">
+        
+        <!-- Left: Status & Identity Card -->
+        <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); padding: 28px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 22px;">
+              <div style="width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, #003D8C, #0284c7); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 8px 20px rgba(0, 61, 140, 0.25);">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div>
+                <h3 style="margin: 0; font-size: 1.25rem; color: #0f172a; font-family: 'Outfit', sans-serif;">Security & Credentials</h3>
+                <span style="font-size: 0.78rem; color: #64748b;">Administrator Access Protection</span>
+              </div>
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">
+                <span style="font-size: 0.82rem; color: #64748b; font-weight: 600;">Active Username:</span>
+                <span id="secDisplayUsername" style="font-weight: 700; color: #003D8C; font-size: 0.95rem; font-family: monospace;">admin</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">
+                <span style="font-size: 0.82rem; color: #64748b; font-weight: 600;">Security Encryption:</span>
+                <span style="background: rgba(16, 185, 129, 0.12); color: #047857; font-weight: 700; font-size: 0.75rem; padding: 3px 8px; border-radius: 6px;">
+                  <i class="fa-solid fa-check"></i> PBKDF2 SHA-512
+                </span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.82rem; color: #64748b; font-weight: 600;">Last Modified:</span>
+                <span id="secDisplayLastUpdated" style="font-size: 0.82rem; color: #475569; font-weight: 600;">Default</span>
+              </div>
+            </div>
+
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 16px; margin-bottom: 15px;">
+              <h5 style="margin: 0 0 6px; font-size: 0.85rem; color: #1e40af; font-weight: 700;">
+                <i class="fa-solid fa-user-shield"></i> Credential Privacy Active
+              </h5>
+              <p style="margin: 0; font-size: 0.78rem; color: #1e3a8a; line-height: 1.55;">
+                Credentials and password hints are strictly hidden from dashboard view and public website visitors. Only authorized administrators with current password verification can change credentials.
+              </p>
+            </div>
+          </div>
+
+          <div style="padding-top: 15px; border-top: 1px solid #f1f5f9; font-size: 0.76rem; color: #94a3b8; display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-lock"></i> Zero Data Loss Architecture: Changing credentials will not affect courses, gallery, enquiries, or certificates.
+          </div>
+        </div>
+
+        <!-- Right: Change Credentials Form Card -->
+        <div style="background: #ffffff; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); padding: 28px; box-shadow: var(--shadow-sm);">
+          <div style="margin-bottom: 22px;">
+            <h3 style="font-size: 1.25rem; font-family: 'Outfit', sans-serif; color: #0f172a; margin: 0 0 4px;">Update Administrator Credentials</h3>
+            <p style="font-size: 0.84rem; color: #64748b; margin: 0;">Change your username, password, or both simultaneously. Your current password is required for confirmation.</p>
+          </div>
+
+          <!-- Feedback Alert -->
+          <div id="secAlertMsg" style="display: none; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.86rem; align-items: center; gap: 10px;"></div>
+
+          <form id="secChangeCredsForm">
+            <!-- Current Password -->
+            <div class="form-group" style="margin-bottom: 18px;">
+              <label class="form-label" style="font-weight: 700; font-size: 0.84rem; color: #1e293b;">Current Password * <span style="font-weight: 400; color: #64748b;">(Required to confirm your identity)</span></label>
+              <div class="admin-pass-wrap">
+                <input type="password" id="secCurrentPass" class="form-control" required placeholder="Enter current password" autocomplete="current-password">
+                <button type="button" class="admin-pass-toggle" onclick="togglePassField('secCurrentPass', 'secCurrentPassIcon')" title="Show / Hide Password">
+                  <i class="fa-solid fa-eye" id="secCurrentPassIcon"></i>
+                </button>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+              <!-- New Username -->
+              <div class="form-group">
+                <label class="form-label" style="font-weight: 700; font-size: 0.84rem; color: #1e293b;">New Username <span style="font-weight: 400; color: #64748b;">(Optional)</span></label>
+                <input type="text" id="secNewUsername" class="form-control" placeholder="Leave blank to keep current" autocomplete="username">
+                <span style="font-size: 0.74rem; color: #94a3b8; display: block; margin-top: 4px;">Min. 3 characters (letters, numbers, . - _)</span>
+              </div>
+
+              <!-- New Password -->
+              <div class="form-group">
+                <label class="form-label" style="font-weight: 700; font-size: 0.84rem; color: #1e293b;">New Password <span style="font-weight: 400; color: #64748b;">(Optional)</span></label>
+                <div class="admin-pass-wrap">
+                  <input type="password" id="secNewPass" class="form-control" placeholder="Leave blank to keep current" autocomplete="new-password">
+                  <button type="button" class="admin-pass-toggle" onclick="togglePassField('secNewPass', 'secNewPassIcon')" title="Show / Hide Password">
+                    <i class="fa-solid fa-eye" id="secNewPassIcon"></i>
+                  </button>
+                </div>
+                <span style="font-size: 0.74rem; color: #94a3b8; display: block; margin-top: 4px;">Min. 6 characters</span>
+              </div>
+            </div>
+
+            <!-- Confirm New Password -->
+            <div class="form-group" style="margin-bottom: 22px;">
+              <label class="form-label" style="font-weight: 700; font-size: 0.84rem; color: #1e293b;">Confirm New Password</label>
+              <div class="admin-pass-wrap">
+                <input type="password" id="secConfirmPass" class="form-control" placeholder="Re-enter new password" autocomplete="new-password">
+                <button type="button" class="admin-pass-toggle" onclick="togglePassField('secConfirmPass', 'secConfirmPassIcon')" title="Show / Hide Password">
+                  <i class="fa-solid fa-eye" id="secConfirmPassIcon"></i>
+                </button>
+              </div>
+              <div id="secPassMatchText" style="font-size: 0.75rem; font-weight: 600; margin-top: 4px; display: none;"></div>
+            </div>
+
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+              <button type="submit" id="secSubmitBtn" class="btn btn-primary" style="padding: 11px 24px; font-weight: 700; border-radius: 8px;">
+                <i class="fa-solid fa-lock"></i> Update Administrator Credentials
+              </button>
+              <button type="button" class="btn btn-outline" onclick="resetSecurityTabForm()">
+                Reset Form
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         MODAL: CHANGE CREDENTIALS QUICK DIALOG (ACCESSIBLE FROM HEADER)
+         ========================================================================= -->
+    <div class="admin-modal-backdrop" id="credentialsModal">
+      <div class="admin-modal-box" style="max-width: 540px;">
+        <div class="admin-modal-header">
+          <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; color: var(--dark); margin: 0;">
+            <i class="fa-solid fa-key" style="color: var(--primary);"></i> Change Admin Credentials
+          </h3>
+          <button type="button" class="modal-close-btn" onclick="closeCredentialsModal()">&times;</button>
+        </div>
+        <form id="modalChangeCredsForm">
+          <div class="admin-modal-body">
+            <div id="modalCredAlert" style="display: none; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.86rem; align-items: center; gap: 10px;"></div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label class="form-label" style="font-weight: 700; font-size: 0.84rem; color: #1e293b;">Current Password *</label>
+              <div class="admin-pass-wrap">
+                <input type="password" id="modalCurrentPass" class="form-control" required placeholder="Enter current password" autocomplete="current-password">
+                <button type="button" class="admin-pass-toggle" onclick="togglePassField('modalCurrentPass', 'modalCurrentPassIcon')" title="Show / Hide Password">
+                  <i class="fa-solid fa-eye" id="modalCurrentPassIcon"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label class="form-label" style="font-weight: 700; font-size: 0.84rem; color: #1e293b;">New Username <span style="font-weight: 400; color: #64748b;">(Leave blank to keep current)</span></label>
+              <input type="text" id="modalNewUsername" class="form-control" placeholder="Leave blank to keep current" autocomplete="username">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label class="form-label" style="font-weight: 700; font-size: 0.84rem; color: #1e293b;">New Password <span style="font-weight: 400; color: #64748b;">(Leave blank to keep current)</span></label>
+              <div class="admin-pass-wrap">
+                <input type="password" id="modalNewPass" class="form-control" placeholder="Leave blank to keep current (min. 6 chars)" autocomplete="new-password">
+                <button type="button" class="admin-pass-toggle" onclick="togglePassField('modalNewPass', 'modalNewPassIcon')" title="Show / Hide Password">
+                  <i class="fa-solid fa-eye" id="modalNewPassIcon"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label class="form-label" style="font-weight: 700; font-size: 0.84rem; color: #1e293b;">Confirm New Password</label>
+              <div class="admin-pass-wrap">
+                <input type="password" id="modalConfirmPass" class="form-control" placeholder="Re-enter new password" autocomplete="new-password">
+                <button type="button" class="admin-pass-toggle" onclick="togglePassField('modalConfirmPass', 'modalConfirmPassIcon')" title="Show / Hide Password">
+                  <i class="fa-solid fa-eye" id="modalConfirmPassIcon"></i>
+                </button>
+              </div>
+              <div id="modalPassMatchText" style="font-size: 0.75rem; font-weight: 600; margin-top: 4px; display: none;"></div>
+            </div>
+          </div>
+
+          <div class="admin-modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeCredentialsModal()">Cancel</button>
+            <button type="submit" id="modalSubmitBtn" class="btn btn-primary" style="font-weight: 700;">
+              <i class="fa-solid fa-lock"></i> Update Credentials
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- =========================================================================
          ADD / EDIT COURSE MODAL WITH DYNAMIC CUSTOM FIELDS BUILDER
          ========================================================================= -->
     <div class="admin-modal-backdrop" id="courseEditModal">
@@ -826,43 +1049,39 @@
   <script src="js/courses-data.js"></script>
   <script src="js/gallery.js"></script>
   <script>
-    // Universal API fetch helper (handles both relative and Express backend on port 8080)
+    // Universal API fetch helper (handles relative, Express port 8080, and Live Server dev ports)
     async function adminFetch(endpoint, options = {}) {
+      const clean = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+      const port = window.location.port;
+      const isLocalDevPort = port && port !== '8080' && port !== '80' && port !== '443';
       const host = window.location.hostname || 'localhost';
-      const backendBase = `http://${host}:8080`;
-
-      // If page is hosted on Express port 8080, relative fetch works directly
-      if (window.location.port === '8080') {
-        try {
-          return await fetch(endpoint, options);
-        } catch (e) {
-          return null;
-        }
-      }
-
-      // If page is hosted on Live Server or other port, try relative first, then fallback to 8080
-      try {
-        const res = await fetch(endpoint, options);
-        if (res.status !== 404) return res;
-      } catch (e) {}
+      const targetUrl = isLocalDevPort ? `http://${host}:8080${clean}` : clean;
 
       try {
-        const fallbackUrl = backendBase + (endpoint.startsWith('/') ? endpoint : '/' + endpoint);
-        const res = await fetch(fallbackUrl, options);
-        return res;
+        const res = await fetch(targetUrl, options);
+        if (res) return res;
       } catch (e) {
-        console.warn('Backend fetch failed on port 8080:', e);
-        return null;
+        console.warn('[Admin] Direct fetch error for ' + targetUrl, e);
       }
+
+      if (isLocalDevPort) {
+        try {
+          const res = await fetch(clean, options);
+          if (res) return res;
+        } catch (e) {}
+      }
+
+      return null;
     }
 
-    // Tab Switching Logic (Supports Leads, Event Links, Courses, Gallery)
+    // Tab Switching Logic (Supports Leads, Event Links, Courses, Gallery, Security)
     function switchAdminTab(tabName) {
       const tabs = {
         leads: { sec: document.getElementById('leadsSection'), btn: document.getElementById('tabBtnLeads') },
         eventLinks: { sec: document.getElementById('eventLinksSection'), btn: document.getElementById('tabBtnEventLinks') },
         courses: { sec: document.getElementById('coursesSection'), btn: document.getElementById('tabBtnCourses') },
-        gallery: { sec: document.getElementById('gallerySection'), btn: document.getElementById('tabBtnGallery') }
+        gallery: { sec: document.getElementById('gallerySection'), btn: document.getElementById('tabBtnGallery') },
+        security: { sec: document.getElementById('securitySection'), btn: document.getElementById('tabBtnSecurity') }
       };
 
       Object.keys(tabs).forEach(key => {
@@ -877,6 +1096,7 @@
       else if (tabName === 'eventLinks') loadAdminEventLinks();
       else if (tabName === 'courses') loadAdminCourses();
       else if (tabName === 'leads') loadLeads();
+      else if (tabName === 'security') loadAdminSecurityStatus();
     }
 
     /* -------------------------------------------------------------
@@ -1900,6 +2120,52 @@
       });
     }
 
+    // Toggle Password Visibility Utility for any input
+    function togglePassField(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (!input) return;
+      const isPass = input.type === 'password';
+      input.type = isPass ? 'text' : 'password';
+      if (icon) {
+        icon.className = isPass ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+      }
+    }
+
+    // Modal Control
+    function openCredentialsModal() {
+      const modal = document.getElementById('credentialsModal');
+      if (modal) {
+        modal.classList.add('show');
+        resetModalForm();
+      }
+    }
+
+    function closeCredentialsModal() {
+      const modal = document.getElementById('credentialsModal');
+      if (modal) {
+        modal.classList.remove('show');
+      }
+    }
+
+    window.addEventListener('click', (e) => {
+      const credModal = document.getElementById('credentialsModal');
+      if (e.target === credModal) {
+        closeCredentialsModal();
+      }
+    });
+
+    // Browser SHA-256 Utility for Offline Security Vault
+    async function hashPassSha256(str) {
+      try {
+        const buffer = new TextEncoder().encode(str);
+        const digest = await crypto.subtle.digest('SHA-256', buffer);
+        return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+      } catch (e) {
+        return str;
+      }
+    }
+
     // Check existing authentication
     function checkAuthStatus() {
       const isSessionAuth = sessionStorage.getItem('gtec_admin_logged_in') === 'true';
@@ -1919,11 +2185,12 @@
       loadAdminEventLinks();
       loadAdminCourses();
       loadAdminGallery();
+      loadAdminSecurityStatus();
 
-      // Check hash navigation e.g. #eventLinksSection or #coursesSection
+      // Check hash navigation e.g. #eventLinksSection or #coursesSection or #securitySection
       if (window.location.hash) {
         const h = window.location.hash.replace('#', '').replace('Section', '');
-        if (['leads', 'eventLinks', 'courses', 'gallery'].includes(h)) {
+        if (['leads', 'eventLinks', 'courses', 'gallery', 'security'].includes(h)) {
           switchAdminTab(h);
         }
       }
@@ -1933,6 +2200,300 @@
       dashboard.style.display = 'none';
       authGate.style.display = 'flex';
       loginError.style.display = 'none';
+    }
+
+    // Load Admin Security Profile (Hides passwords/hints completely)
+    async function loadAdminSecurityStatus() {
+      try {
+        const res = await adminFetch('/api/admin/credentials/status');
+        if (res && res.ok) {
+          const data = await res.json();
+          if (data && data.success && data.profile) {
+            const p = data.profile;
+            const userEl = document.getElementById('secDisplayUsername');
+            const dateEl = document.getElementById('secDisplayLastUpdated');
+            if (userEl) userEl.textContent = p.username || 'admin';
+            if (dateEl) {
+              if (p.isCustomized && p.updatedAt) {
+                const dt = new Date(p.updatedAt);
+                dateEl.textContent = dt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+              } else {
+                dateEl.textContent = 'Default Initial Setup';
+              }
+            }
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Checking local security vault...');
+      }
+
+      // Offline vault fallback
+      const cached = localStorage.getItem('gtec_admin_cred_vault');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          const userEl = document.getElementById('secDisplayUsername');
+          if (userEl && parsed.username) userEl.textContent = parsed.username;
+        } catch (e) {}
+      }
+    }
+
+    // Unified Credential Update Function
+    async function submitCredentialChange({ currentPassword, newUsername, newPassword, confirmPassword, alertElId, submitBtnId }) {
+      const alertEl = document.getElementById(alertElId);
+      const submitBtn = document.getElementById(submitBtnId);
+      const origText = submitBtn ? submitBtn.innerHTML : '';
+
+      if (alertEl) {
+        alertEl.style.display = 'none';
+        alertEl.innerHTML = '';
+      }
+
+      if (!currentPassword) {
+        showCredAlert(alertElId, 'Current password is required to authorize this change.', 'error');
+        return false;
+      }
+
+      if (!newUsername && !newPassword) {
+        showCredAlert(alertElId, 'Please enter a new username or a new password.', 'error');
+        return false;
+      }
+
+      if (newPassword) {
+        if (newPassword.length < 6) {
+          showCredAlert(alertElId, 'New password must be at least 6 characters long.', 'error');
+          return false;
+        }
+        if (newPassword !== confirmPassword) {
+          showCredAlert(alertElId, 'New password and confirmation password do not match.', 'error');
+          return false;
+        }
+      }
+
+      if (newUsername && newUsername.trim().length < 3) {
+        showCredAlert(alertElId, 'New username must be at least 3 characters long.', 'error');
+        return false;
+      }
+
+      if (submitBtn) {
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating...';
+        submitBtn.disabled = true;
+      }
+
+      let updated = false;
+      let respMsg = '';
+      let updatedUser = newUsername ? newUsername.trim() : '';
+
+      try {
+        const res = await adminFetch('/api/admin/change-credentials', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ currentPassword, newUsername, newPassword, confirmPassword })
+        });
+
+        if (res) {
+          const data = await res.json();
+          if (res.ok && data && data.success) {
+            updated = true;
+            respMsg = data.message || 'Admin credentials updated successfully!';
+            if (data.username) updatedUser = data.username;
+          } else {
+            showCredAlert(alertElId, (data && data.message) || 'Failed to update credentials. Please check your current password.', 'error');
+          }
+        } else {
+          throw new Error('Offline fallback required');
+        }
+      } catch (err) {
+        // Fallback for offline / static hosting mode
+        try {
+          const curHash = await hashPassSha256(currentPassword);
+          const cachedVault = localStorage.getItem('gtec_admin_cred_vault');
+          let currentMatches = false;
+          let activeUser = 'admin';
+
+          if (cachedVault) {
+            const vault = JSON.parse(cachedVault);
+            if (vault.passHash === curHash) {
+              currentMatches = true;
+              activeUser = vault.username;
+            }
+          } else {
+            const defaultHashes = [
+              '17c39b622c920e1a5914114388ba97579ed366249abdc442d966deb9625408e3',
+              '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
+              '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
+            ];
+            if (defaultHashes.includes(curHash)) {
+              currentMatches = true;
+            }
+          }
+
+          if (currentMatches) {
+            const finalUser = newUsername ? newUsername.trim() : activeUser;
+            const finalPassHash = newPassword ? await hashPassSha256(newPassword) : curHash;
+            localStorage.setItem('gtec_admin_cred_vault', JSON.stringify({
+              username: finalUser.toLowerCase(),
+              passHash: finalPassHash,
+              updatedAt: new Date().toISOString()
+            }));
+            updated = true;
+            updatedUser = finalUser;
+            respMsg = 'Credentials updated in offline security vault successfully!';
+          } else {
+            showCredAlert(alertElId, 'Current password is incorrect. Please verify and try again.', 'error');
+          }
+        } catch (e) {
+          showCredAlert(alertElId, 'An error occurred while updating credentials.', 'error');
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.innerHTML = origText;
+          submitBtn.disabled = false;
+        }
+      }
+
+      if (updated) {
+        if (newPassword) {
+          const pHash = await hashPassSha256(newPassword);
+          localStorage.setItem('gtec_admin_cred_vault', JSON.stringify({
+            username: (updatedUser || 'admin').toLowerCase(),
+            passHash: pHash,
+            updatedAt: new Date().toISOString()
+          }));
+        }
+
+        showCredAlert(alertElId, respMsg, 'success');
+        resetSecurityTabForm();
+        resetModalForm();
+        loadAdminSecurityStatus();
+
+        setTimeout(() => {
+          closeCredentialsModal();
+        }, 2000);
+        return true;
+      }
+      return false;
+    }
+
+    function showCredAlert(elId, msg, type) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.style.display = 'flex';
+      if (type === 'success') {
+        el.style.background = '#ecfdf5';
+        el.style.color = '#047857';
+        el.style.border = '1px solid #a7f3d0';
+        el.innerHTML = '<i class="fa-solid fa-circle-check" style="font-size: 1.1rem;"></i> <span>' + msg + '</span>';
+      } else {
+        el.style.background = '#fef2f2';
+        el.style.color = '#b91c1c';
+        el.style.border = '1px solid #fecaca';
+        el.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="font-size: 1.1rem;"></i> <span>' + msg + '</span>';
+      }
+    }
+
+    function resetSecurityTabForm() {
+      const form = document.getElementById('secChangeCredsForm');
+      if (form) form.reset();
+      const match = document.getElementById('secPassMatchText');
+      if (match) match.style.display = 'none';
+    }
+
+    function resetModalForm() {
+      const form = document.getElementById('modalChangeCredsForm');
+      if (form) form.reset();
+      const match = document.getElementById('modalPassMatchText');
+      if (match) match.style.display = 'none';
+      const alert = document.getElementById('modalCredAlert');
+      if (alert) alert.style.display = 'none';
+    }
+
+    function setupPasswordMatchIndicators() {
+      const secPass = document.getElementById('secNewPass');
+      const secConfirm = document.getElementById('secConfirmPass');
+      const secMatch = document.getElementById('secPassMatchText');
+
+      function checkSecMatch() {
+        if (!secMatch || !secConfirm) return;
+        if (!secConfirm.value) {
+          secMatch.style.display = 'none';
+          return;
+        }
+        secMatch.style.display = 'block';
+        if (secPass.value === secConfirm.value) {
+          secMatch.style.color = '#16a34a';
+          secMatch.innerHTML = '<i class="fa-solid fa-check"></i> Passwords match';
+        } else {
+          secMatch.style.color = '#dc2626';
+          secMatch.innerHTML = '<i class="fa-solid fa-xmark"></i> Passwords do not match';
+        }
+      }
+
+      if (secPass) secPass.addEventListener('input', checkSecMatch);
+      if (secConfirm) secConfirm.addEventListener('input', checkSecMatch);
+
+      const modalPass = document.getElementById('modalNewPass');
+      const modalConfirm = document.getElementById('modalConfirmPass');
+      const modalMatch = document.getElementById('modalPassMatchText');
+
+      function checkModalMatch() {
+        if (!modalMatch || !modalConfirm) return;
+        if (!modalConfirm.value) {
+          modalMatch.style.display = 'none';
+          return;
+        }
+        modalMatch.style.display = 'block';
+        if (modalPass.value === modalConfirm.value) {
+          modalMatch.style.color = '#16a34a';
+          modalMatch.innerHTML = '<i class="fa-solid fa-check"></i> Passwords match';
+        } else {
+          modalMatch.style.color = '#dc2626';
+          modalMatch.innerHTML = '<i class="fa-solid fa-xmark"></i> Passwords do not match';
+        }
+      }
+
+      if (modalPass) modalPass.addEventListener('input', checkModalMatch);
+      if (modalConfirm) modalConfirm.addEventListener('input', checkModalMatch);
+    }
+
+    // Attach Section 5 & Modal Form Submit Handlers
+    const secForm = document.getElementById('secChangeCredsForm');
+    if (secForm) {
+      secForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const currentPassword = document.getElementById('secCurrentPass').value;
+        const newUsername = document.getElementById('secNewUsername').value;
+        const newPassword = document.getElementById('secNewPass').value;
+        const confirmPassword = document.getElementById('secConfirmPass').value;
+        submitCredentialChange({
+          currentPassword,
+          newUsername,
+          newPassword,
+          confirmPassword,
+          alertElId: 'secAlertMsg',
+          submitBtnId: 'secSubmitBtn'
+        });
+      });
+    }
+
+    const modalForm = document.getElementById('modalChangeCredsForm');
+    if (modalForm) {
+      modalForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const currentPassword = document.getElementById('modalCurrentPass').value;
+        const newUsername = document.getElementById('modalNewUsername').value;
+        const newPassword = document.getElementById('modalNewPass').value;
+        const confirmPassword = document.getElementById('modalConfirmPass').value;
+        submitCredentialChange({
+          currentPassword,
+          newUsername,
+          newPassword,
+          confirmPassword,
+          alertElId: 'modalCredAlert',
+          submitBtnId: 'modalSubmitBtn'
+        });
+      });
     }
 
     // Login Form Submit Handler
@@ -1952,7 +2513,6 @@
         let authenticated = false;
 
         try {
-          // Attempt server authentication
           const res = await adminFetch('/api/admin/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1964,18 +2524,30 @@
               authenticated = true;
             }
           }
-        } catch (err) {
-          // Live Server / Offline fallback
-          console.log('Server login unreachable, evaluating local credentials...');
-        }
+        } catch (err) {}
 
-        // Local credential validation fallback for static/live-server hosting
+        // Secure fallback for offline / static server hosting (zero plaintext passwords)
         if (!authenticated) {
-          const validUsers = ['admin', 'staff', 'gtec'];
-          const validPass = ['admin', 'gtec2026', 'admin123'];
-          if (validUsers.includes(username.toLowerCase()) && validPass.includes(password)) {
-            authenticated = true;
-          }
+          try {
+            const passHash = await hashPassSha256(password);
+            const cachedVault = localStorage.getItem('gtec_admin_cred_vault');
+            if (cachedVault) {
+              const vault = JSON.parse(cachedVault);
+              if (vault.username === username.toLowerCase() && vault.passHash === passHash) {
+                authenticated = true;
+              }
+            } else {
+              const defaultHashes = [
+                '17c39b622c920e1a5914114388ba97579ed366249abdc442d966deb9625408e3',
+                '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
+                '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'
+              ];
+              const defaultUsers = ['admin', 'staff', 'gtec'];
+              if (defaultUsers.includes(username.toLowerCase()) && defaultHashes.includes(passHash)) {
+                authenticated = true;
+              }
+            }
+          } catch (e) {}
         }
 
         submitBtn.innerHTML = origText;
@@ -2005,7 +2577,8 @@
       });
     }
 
-    // Initialize Auth on Load
+    // Initialize Auth & Indicators on Load
+    setupPasswordMatchIndicators();
     checkAuthStatus();
   </script>
 </body>

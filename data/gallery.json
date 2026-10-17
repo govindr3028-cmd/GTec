@@ -1,33 +1,36 @@
 [
   {
-    "id": "GAL-1001",
-    "title": "Annual Tech Hackathon & Coding Conclave",
-    "category": "Workshops & Tech",
-    "date": "March 2026",
-    "image": "images/gallery/tech-hackathon.jpg",
-    "caption": "Students collaborating on Python Full Stack and AI models in the high-speed campus computer lab.",
-    "isHighlight": true,
-    "createdAt": "2026-03-15T10:00:00.000Z"
-  },
-  {
-    "id": "GAL-1002",
-    "title": "Infopark Campus Placement & Offer Letters",
-    "category": "Placements",
-    "date": "February 2026",
-    "image": "images/gallery/placement-day.jpg",
-    "caption": "Proud graduates celebrating confirmed offer letters from prominent Kochi Infopark and multinational firms.",
-    "isHighlight": true,
-    "createdAt": "2026-02-20T11:30:00.000Z"
-  },
-  {
-    "id": "GAL-1003",
-    "title": "Traditional Onam Cultural Celebrations",
+    "id": "GAL-47494",
+    "title": "GZoom",
     "category": "Campus Life",
-    "date": "September 2025",
-    "image": "images/gallery/onam-celebration.jpg",
-    "caption": "Students and faculty coming together in traditional Kasavu attire around an elaborate floral pookkalam.",
+    "date": "January 2026",
+    "image": "images/gallery/upload-1792240347493.jpg",
+    "caption": "",
     "isHighlight": true,
-    "createdAt": "2025-09-12T09:15:00.000Z"
+    "createdAt": "2026-10-17T12:32:27.494+00:00",
+    "updatedAt": "2026-10-17T12:32:27.494+00:00"
+  },
+  {
+    "id": "GAL-90498",
+    "title": "Campus staff",
+    "category": "Campus Life",
+    "date": "March 2026",
+    "image": "images/gallery/upload-1792223690497.jpg",
+    "caption": "",
+    "isHighlight": true,
+    "createdAt": "2026-10-17T07:54:50.498+00:00",
+    "updatedAt": "2026-10-17T07:54:50.498+00:00"
+  },
+  {
+    "id": "GAL-43644",
+    "title": "GZoom",
+    "category": "Campus Life",
+    "date": "January",
+    "image": "images/gallery/upload-1792219243642.jpg",
+    "caption": "",
+    "isHighlight": true,
+    "createdAt": "2026-10-17T06:40:43.644+00:00",
+    "updatedAt": "2026-10-17T06:40:43.644+00:00"
   },
   {
     "id": "GAL-1004",
@@ -37,7 +40,8 @@
     "image": "images/gallery/annual-convocation.jpg",
     "caption": "Honoring course toppers, certified accountants, and software engineers with global G-TEC credentials.",
     "isHighlight": true,
-    "createdAt": "2026-01-18T14:00:00.000Z"
+    "createdAt": "2026-10-17T05:51:43.29041+00:00",
+    "updatedAt": "2026-10-17T05:51:43.29041+00:00"
   },
   {
     "id": "GAL-1005",
@@ -47,17 +51,19 @@
     "image": "images/gallery/excellence-awards.jpg",
     "caption": "G-TEC recognized for unmatched excellence in skill development and hands-on professional education.",
     "isHighlight": false,
-    "createdAt": "2025-11-05T16:45:00.000Z"
+    "createdAt": "2026-10-17T05:51:43.29041+00:00",
+    "updatedAt": "2026-10-17T05:51:43.29041+00:00"
   },
   {
-    "id": "GAL-1006",
-    "title": "Industry Mentor & Corporate Faculty Meet",
+    "id": "GAL-1001",
+    "title": "Annual Tech Hackathon & Coding Conclave",
     "category": "Workshops & Tech",
-    "date": "December 2025",
-    "image": "images/gallery/faculty-merit.jpg",
-    "caption": "Senior technical consultants reviewing emerging AI, SAP FICO, and Revit BIM industry course modules.",
-    "isHighlight": false,
-    "createdAt": "2025-12-10T10:30:00.000Z"
+    "date": "March 2026",
+    "image": "images/gallery/tech-hackathon.jpg",
+    "caption": "Students collaborating on Python Full Stack and AI models in the high-speed campus computer lab.",
+    "isHighlight": true,
+    "createdAt": "2026-10-17T05:51:43.29041+00:00",
+    "updatedAt": "2026-10-17T05:51:43.29041+00:00"
   },
   {
     "id": "GAL-1007",
@@ -67,6 +73,40 @@
     "image": "images/gallery/smart-classrooms.webp",
     "caption": "Spacious, air-conditioned labs equipped with modern workstations and licensed design software.",
     "isHighlight": false,
-    "createdAt": "2026-01-08T08:30:00.000Z"
+    "createdAt": "2026-10-17T05:51:43.29041+00:00",
+    "updatedAt": "2026-10-17T05:51:43.29041+00:00"
+  },
+  {
+    "id": "GAL-1006",
+    "title": "Industry Mentor & Corporate Faculty Meet",
+    "category": "Workshops & Tech",
+    "date": "December 2025",
+    "image": "images/gallery/faculty-merit.jpg",
+    "caption": "Senior technical consultants reviewing emerging AI, SAP FICO, and Revit BIM industry course modules.",
+    "isHighlight": false,
+    "createdAt": "2026-10-17T05:51:43.29041+00:00",
+    "updatedAt": "2026-10-17T05:51:43.29041+00:00"
+  },
+  {
+    "id": "GAL-1002",
+    "title": "Infopark Campus Placement & Offer Letters",
+    "category": "Placements",
+    "date": "February 2026",
+    "image": "images/gallery/placement-day.jpg",
+    "caption": "Proud graduates celebrating confirmed offer letters from prominent Kochi Infopark and multinational firms.",
+    "isHighlight": true,
+    "createdAt": "2026-10-17T05:51:43.29041+00:00",
+    "updatedAt": "2026-10-17T05:51:43.29041+00:00"
+  },
+  {
+    "id": "GAL-1003",
+    "title": "Traditional Onam Cultural Celebrations",
+    "category": "Campus Life",
+    "date": "September 2025",
+    "image": "images/gallery/onam-celebration.jpg",
+    "caption": "Students and faculty coming together in traditional Kasavu attire around an elaborate floral pookkalam.",
+    "isHighlight": true,
+    "createdAt": "2026-10-17T05:51:43.29041+00:00",
+    "updatedAt": "2026-10-17T05:51:43.29041+00:00"
   }
 ]

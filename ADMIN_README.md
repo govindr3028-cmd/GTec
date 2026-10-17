@@ -24,25 +24,22 @@ Depending on how your website is hosted or running:
 
 ---
 
-## 🔑 2. Login Credentials
+## 🔑 2. Admin Security & Credential Customization
 
 The Admin Portal is protected by an authentication barrier to prevent unauthorized visitors from viewing student inquiries or altering website photos.
 
-| Field | Demo / Default Credential | Alternative Accepted Values |
-| :--- | :--- | :--- |
-| **Username** | `admin` | `staff` or `gtec` |
-| **Password** | `gtec2026` | `admin` or `admin123` |
-
-### Key Login Features:
-- **Password Visibility:** Click the eye icon (`👁️`) on the right of the password field to view or hide your password.
-- **Keep Me Signed In:** When checked, your session persists across browser tabs.
-- **Dual Verification:** Validates against the secure Node.js backend (`/api/admin/login`) with an automatic offline fallback if opened on a static/live server.
+- **Initial Access:** The administrator can sign in using the center's configured credentials.
+- **Customizable Credentials (Change Username & Password):** Administrators can now change their username, password, or both directly inside the Admin Portal at any time via the **"Change Credentials"** header button or the **Security & Credentials** tab.
+- **Hidden Credentials & Privacy:** Credential hints and plaintext passwords are completely hidden from the public website, dashboard views, and client scripts.
+- **PBKDF2 SHA-512 Encryption:** All updated passwords are cryptographic hashes; no plaintext passwords are saved.
+- **Dual Verification:** Validates against the secure Node.js backend (`/api/admin/login` and `/api/admin/change-credentials`) with resilient offline fallback for local testing.
+- **Zero Data Loss:** Updating administrative credentials has 0 impact on courses, student leads, gallery photos, examination links, or certificate verification records.
 
 ---
 
 ## 📋 3. Admin Features & Capabilities (Full Admin Access)
 
-The admin portal features four dedicated management tabs:
+The admin portal features five dedicated management tabs:
 
 ### Tab 1: Admissions & Leads Management (`#leadsSection`)
 - **Real-Time Counters:** View instant counts for *Total Enquiries*, *New Leads*, *In Contact*, and *Enrolled Students*.
@@ -116,6 +113,18 @@ All photo additions and deletions are completely isolated here so visitors on th
 - **Manage Existing Photos:**
   - **1-Click Feature Toggle:** Click `[Feature in Carousel]` or `[Remove from Carousel]` to instantly control which photos appear on the homepage.
   - **1-Click Delete:** Click the trash icon (`🗑️`) to remove any photo from both the gallery and the homepage carousel.
+
+---
+
+### Tab 5: Security & Credential Management (`#securitySection`)
+Comprehensive account protection and credential customization:
+
+- **Active Username Display:** Verify the currently active administrative ID.
+- **Change Username:** Specify any new custom username (letters, numbers, underscores, min. 3 characters).
+- **Change Password:** Specify a new password (min. 6 characters) with real-time match confirmation and toggleable visibility.
+- **Current Password Verification:** Requires verifying current password before applying changes to protect against unauthorized modification.
+- **Hidden Credentials & Hints:** No passwords, hints, or passcodes are exposed on public pages or on dashboard counters.
+- **Persistent Storage:** Stored securely in `data/admin_credentials.json` (and synchronized with Supabase if connected).
 
 ---
 

@@ -41,7 +41,10 @@
     "certifications": [
       "G-TEC Global Diploma",
       "Microsoft Technology Associate (Aligned)"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "fs-mern",
@@ -85,7 +88,10 @@
     "certifications": [
       "G-TEC Master Diploma",
       "Industry Experience Certificate"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "fs-java",
@@ -128,7 +134,10 @@
     "certifications": [
       "G-TEC Enterprise Diploma",
       "Oracle Java Aligned"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "acc-dia",
@@ -170,7 +179,10 @@
     "certifications": [
       "G-TEC International Accounting Diploma",
       "Tally Education Authorized Certification"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "acc-sap",
@@ -209,7 +221,10 @@
     "certifications": [
       "G-TEC SAP Academy Diploma",
       "Global Certification Alignment"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "acc-tally",
@@ -248,7 +263,10 @@
     "certifications": [
       "TallyPrime Authorized Certification",
       "G-TEC Certificate of Competence"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "ai-data-science",
@@ -292,7 +310,10 @@
     "certifications": [
       "G-TEC Certified Data Science Professional",
       "Microsoft Power BI Aligned"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "ai-agentic",
@@ -333,7 +354,10 @@
     ],
     "certifications": [
       "G-TEC Emerging Technologies Certification"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "cadd-arch",
@@ -375,7 +399,10 @@
     "certifications": [
       "Autodesk Authorized Certification",
       "G-CADD Master Diploma"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "cadd-interior",
@@ -415,7 +442,10 @@
     ],
     "certifications": [
       "G-TEC Diploma in Interior Designing"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "cadd-mech",
@@ -454,7 +484,10 @@
     "certifications": [
       "Autodesk & Dassault Aligned Certification",
       "G-CADD Mechanical Diploma"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "media-uiux",
@@ -496,7 +529,10 @@
     "certifications": [
       "G-TEC Certified UI/UX Specialist",
       "Portfolio Verified Certificate"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "media-graphic",
@@ -536,7 +572,10 @@
     "certifications": [
       "Adobe Certified Associate (Aligned)",
       "G-TEC Diploma in Graphic Design"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "media-video",
@@ -576,7 +615,10 @@
     "certifications": [
       "G-TEC Multimedia Certification",
       "Adobe Certified Aligned"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "net-cyber",
@@ -618,7 +660,10 @@
     "certifications": [
       "G-TEC Cyber Security Diploma",
       "CompTIA Security+ Aligned"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "net-ccna",
@@ -658,7 +703,10 @@
     "certifications": [
       "Cisco CCNA (Aligned Prep)",
       "G-TEC Certified Network Specialist"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "hw-mobile-chip",
@@ -698,7 +746,10 @@
     ],
     "certifications": [
       "G-TEC Hardware & Chip Level Specialist Diploma"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   },
   {
     "id": "dm-master",
@@ -743,6 +794,9 @@
       "Google Ads Certified",
       "HubSpot Certified (Aligned)",
       "G-TEC Digital Marketing Diploma"
-    ]
+    ],
+    "customFields": [],
+    "createdAt": "2026-10-17T05:51:42.92683+00:00",
+    "updatedAt": "2026-10-17T05:51:42.92683+00:00"
   }
 ]
