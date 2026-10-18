@@ -652,9 +652,43 @@ app.delete('/api/gallery/:id', async (req, res) => {
   }
 });
 
-// Admin Page Route
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
+/* ==========================================================================
+   SEO & Public Page Clean Routes
+   ========================================================================== */
+
+// Robots.txt
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain').sendFile(path.join(__dirname, 'robots.txt'));
+});
+
+// XML Sitemap
+app.get('/sitemap.xml', (req, res) => {
+  res.type('application/xml').sendFile(path.join(__dirname, 'sitemap.xml'));
+});
+
+// Public Clean Routes
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, 'about.html'));
+});
+
+app.get('/courses', (req, res) => {
+  res.sendFile(path.join(__dirname, 'courses.html'));
+});
+
+app.get('/placement', (req, res) => {
+  res.sendFile(path.join(__dirname, 'placement.html'));
+});
+
+app.get('/affiliation', (req, res) => {
+  res.sendFile(path.join(__dirname, 'affiliation.html'));
+});
+
+app.get('/gallery', (req, res) => {
+  res.sendFile(path.join(__dirname, 'gallery.html'));
+});
+
+app.get('/contact', (req, res) => {
+  res.sendFile(path.join(__dirname, 'contact.html'));
 });
 
 // Verify Page Route
@@ -662,9 +696,9 @@ app.get('/verify', (req, res) => {
   res.sendFile(path.join(__dirname, 'verify.html'));
 });
 
-// Dedicated Gallery Page Route
-app.get('/gallery', (req, res) => {
-  res.sendFile(path.join(__dirname, 'gallery.html'));
+// Admin Page Route
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
 // Fallback to index.html for undefined routes

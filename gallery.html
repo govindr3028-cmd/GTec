@@ -7,6 +7,27 @@
   <title>Campus Events & Life Gallery | G-TEC Computer Education Tripunithura</title>
   <meta name="description"
     content="Browse campus events, student tech hackathons, placement drives, Onam celebrations, and convocation galleries at G-TEC Computer Education, Statue Junction, Tripunithura, Kochi.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://gtectripunithura.com/gallery">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://gtectripunithura.com/gallery">
+  <meta property="og:site_name" content="G-TEC Computer Education - Tripunithura Campus">
+  <meta property="og:title" content="Campus Events & Life Gallery | G-TEC Computer Education Tripunithura">
+  <meta property="og:description"
+    content="Browse campus events, student tech hackathons, placement drives, Onam celebrations, and convocation galleries at G-TEC Computer Education, Statue Junction, Tripunithura, Kochi.">
+  <meta property="og:image" content="https://gtectripunithura.com/images/gtec.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://gtectripunithura.com/gallery">
+  <meta name="twitter:title" content="Campus Events & Life Gallery | G-TEC Computer Education Tripunithura">
+  <meta name="twitter:description"
+    content="Browse campus events, student tech hackathons, placement drives, Onam celebrations, and convocation galleries at G-TEC Computer Education, Statue Junction, Tripunithura, Kochi.">
+  <meta name="twitter:image" content="https://gtectripunithura.com/images/gtec.png">
+
   <link rel="shortcut icon" href="images/favicon.png" type="image/png">
 
   <!-- Google Fonts & Font Awesome -->
@@ -20,6 +41,46 @@
   <!-- Custom Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- JSON-LD Structured Data: CollectionPage & BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": "https://gtectripunithura.com/gallery#webpage",
+        "url": "https://gtectripunithura.com/gallery",
+        "name": "Campus Events & Life Gallery | G-TEC Computer Education Tripunithura",
+        "description": "Browse campus events, student tech hackathons, placement drives, Onam celebrations, and convocation galleries at G-TEC Computer Education, Statue Junction, Tripunithura, Kochi.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "@id": "https://gtectripunithura.com/#website",
+          "url": "https://gtectripunithura.com/",
+          "name": "G-TEC Tripunithura"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://gtectripunithura.com/gallery#breadcrumbs",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://gtectripunithura.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Gallery",
+            "item": "https://gtectripunithura.com/gallery"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
@@ -48,7 +109,7 @@
     <div class="container nav-container">
       <div class="logo-wrapper">
         <a href="index.html">
-          <img src="images/gtec.png" alt="G-TEC Education Logo" class="logo-img">
+          <img src="images/gtec.png" alt="G-TEC Computer Education Logo" class="logo-img" width="76" height="52">
         </a>
         <div class="branch-tag">
           <span class="branch-name">TRIPUNITHURA</span>
@@ -143,6 +204,34 @@
 
       <!-- Gallery Grid -->
       <div class="gallery-grid" id="galleryGrid">
+        <noscript>
+          <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+            <div class="gallery-card">
+              <div class="gallery-card-thumb"><img src="images/gallery/tech-hackathon.jpg" alt="Annual Tech Hackathon & Coding Conclave" loading="lazy"></div>
+              <div class="gallery-card-body">
+                <div class="gallery-card-date">March 2026</div>
+                <h3 class="gallery-card-title">Annual Tech Hackathon & Coding Conclave</h3>
+                <p class="gallery-card-caption">Students collaborating on Python Full Stack and AI models in the high-speed campus computer lab.</p>
+              </div>
+            </div>
+            <div class="gallery-card">
+              <div class="gallery-card-thumb"><img src="images/gallery/placement-day.jpg" alt="Infopark Campus Placement & Offer Letters" loading="lazy"></div>
+              <div class="gallery-card-body">
+                <div class="gallery-card-date">February 2026</div>
+                <h3 class="gallery-card-title">Infopark Campus Placement & Offer Letters</h3>
+                <p class="gallery-card-caption">Graduates celebrating confirmed offer letters from prominent Kochi Infopark and multinational firms.</p>
+              </div>
+            </div>
+            <div class="gallery-card">
+              <div class="gallery-card-thumb"><img src="images/gallery/annual-convocation.jpg" alt="Annual Convocation & Merit Award Ceremony" loading="lazy"></div>
+              <div class="gallery-card-body">
+                <div class="gallery-card-date">January 2026</div>
+                <h3 class="gallery-card-title">Annual Convocation & Merit Award Ceremony</h3>
+                <p class="gallery-card-caption">Honoring course toppers, certified accountants, and software engineers with global G-TEC credentials.</p>
+              </div>
+            </div>
+          </div>
+        </noscript>
         <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
           <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 12px; color: var(--primary);"></i>
           <p>Loading campus event photographs...</p>
@@ -202,7 +291,7 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-about">
-          <img src="images/gtec.png" alt="G-TEC Logo" class="footer-logo">
+          <img src="images/gtec.png" alt="G-TEC Computer Education Logo" class="footer-logo" width="130" height="89" loading="lazy">
           <p>
             G-TEC Computer Education is an ISO 9001:2015 certified global IT education network with 25+ years of
             excellence. The Tripunithura campus is equipped with cutting-edge labs, certified mentors, and a dedicated
@@ -242,6 +331,7 @@
             <li><a href="placement.html">Placement Records</a></li>
             <li><a href="affiliation.html">Global Affiliations</a></li>
             <li><a href="gallery.html">Campus & Event Gallery</a></li>
+            <li><a href="verify.html">Verify Certificate</a></li>
             <li><a href="contact.html">Campus Location & Directions</a></li>
             <li><a href="javascript:void(0)" onclick="openEnquiryModal('Online Exam Portal')">Online Examination
                 Portal</a></li>
