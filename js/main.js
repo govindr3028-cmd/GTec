@@ -41,6 +41,19 @@ function initNavbar() {
   });
 
   if (toggleBtn && navMenu) {
+    if (!navMenu.querySelector('.mobile-close-btn')) {
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'mobile-close-btn';
+      closeBtn.setAttribute('aria-label', 'Close navigation menu');
+      closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        navMenu.classList.remove('open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      });
+      navMenu.appendChild(closeBtn);
+    }
+
     toggleBtn.addEventListener('click', () => {
       const isOpen = navMenu.classList.toggle('open');
       toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');

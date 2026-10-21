@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "ENQ-30634",
+    "name": "SEO Audit Test",
+    "phone": "9876543210",
+    "email": "",
+    "course": "Python Full Stack",
+    "comments": "Automated SEO audit validation",
+    "mode": "Classroom / Lab",
+    "status": "New",
+    "notes": "",
+    "ip": "::1",
+    "createdAt": "2026-10-19T10:12:10.634+00:00",
+    "updatedAt": "2026-10-19T10:12:10.634+00:00"
+  }
+]
