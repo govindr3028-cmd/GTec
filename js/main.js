@@ -42,12 +42,14 @@ function initNavbar() {
 
   if (toggleBtn && navMenu) {
     toggleBtn.addEventListener('click', () => {
-      navMenu.classList.toggle('open');
+      const isOpen = navMenu.classList.toggle('open');
+      toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
 
     document.addEventListener('click', (e) => {
       if (!navMenu.contains(e.target) && !toggleBtn.contains(e.target) && navMenu.classList.contains('open')) {
         navMenu.classList.remove('open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
       }
     });
 
@@ -57,6 +59,7 @@ function initNavbar() {
       link.addEventListener('click', () => {
         if (window.innerWidth <= 768 && !link.parentElement.classList.contains('has-dropdown')) {
           navMenu.classList.remove('open');
+          toggleBtn.setAttribute('aria-expanded', 'false');
         }
       });
     });
@@ -528,12 +531,18 @@ async function initCoursesGrid() {
   const countBadge = document.getElementById('coursesCount');
 
   let activeCategory = 'all';
+  let searchTerm = '';
   if (typeof window !== 'undefined' && window.location && window.location.search) {
     const urlParams = new URLSearchParams(window.location.search);
     const catParam = urlParams.get('cat');
     if (catParam) activeCategory = catParam;
+    const searchParam = urlParams.get('search') || urlParams.get('q');
+    if (searchParam) {
+      searchTerm = searchParam.toLowerCase().trim();
+      if (searchInput) searchInput.value = searchParam;
+      if (heroSearchInput) heroSearchInput.value = searchParam;
+    }
   }
-  let searchTerm = '';
 
   function syncEnquiryCourseDropdown() {
     const selects = document.querySelectorAll('select[name="course"], #enquiryCourseSelect');

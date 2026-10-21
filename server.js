@@ -18,11 +18,38 @@ app.use(cors());
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
-// Serve Static Assets
+// 1. Security Guard: Prevent public exposure of backend scripts, schemas, and credentials
+const SENSITIVE_PATTERNS = /^\/(server\.js|db\.js|package\.json|package-lock\.json|ADMIN_README\.md|README\.md|SUPABASE_SETUP\.md|supabase_schema\.sql|\.env.*|\.git.*|\.agents.*|skills-lock\.json)$/i;
+app.use((req, res, next) => {
+  if (SENSITIVE_PATTERNS.test(req.path) || req.path.startsWith('/scripts/') || req.path.startsWith('/data/')) {
+    return res.status(404).type('text/plain').send('Resource not found');
+  }
+  next();
+});
+
+// 2. Technical SEO: 301 Permanent Redirection from legacy .html to clean canonical URLs
+app.use((req, res, next) => {
+  if (req.path === '/index.html') {
+    const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+    return res.redirect(301, '/' + query);
+  }
+  if (req.path.endsWith('.html')) {
+    const cleanPath = req.path.slice(0, -5);
+    const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+    return res.redirect(301, cleanPath + query);
+  }
+  next();
+});
+
+// 3. Serve Static Assets with optimized caching
+app.use('/images', express.static(path.join(__dirname, 'images'), { maxAge: '7d' }));
+app.use('/css', express.static(path.join(__dirname, 'css'), { maxAge: '1d' }));
+app.use('/js', express.static(path.join(__dirname, 'js'), { maxAge: '1d' }));
+
 app.use(express.static(path.join(__dirname), {
   maxAge: '1h',
   setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html') || filePath.endsWith('.js')) {
+    if (filePath.endsWith('.html') || filePath.endsWith('.txt') || filePath.endsWith('.xml')) {
       res.setHeader('Cache-Control', 'no-cache, must-revalidate');
     }
   }
@@ -667,6 +694,10 @@ app.get('/sitemap.xml', (req, res) => {
 });
 
 // Public Clean Routes
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.get('/about', (req, res) => {
   res.sendFile(path.join(__dirname, 'about.html'));
 });
@@ -701,9 +732,44 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// Fallback to index.html for undefined routes
+// Dedicated 404 Not Found Page (Eliminating Soft 404 Penalties)
 app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, 'index.html'));
+  res.status(404).type('text/html').send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found (404) | G-TEC Tripunithura</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="shortcut icon" href="/images/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body { font-family: 'Outfit', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #0A192F; color: #fff; text-align: center; margin: 0; padding: 24px; box-sizing: border-box; }
+    .err-box { max-width: 520px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 40px 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .err-code { font-size: 5rem; font-weight: 900; color: #008BD0; margin: 0; line-height: 1; }
+    h1 { font-size: 1.8rem; margin: 16px 0 10px; color: #fff; }
+    p { color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px; }
+    .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; padding: 10px 22px; font-weight: 600; text-decoration: none; border-radius: 8px; transition: all 0.2s; font-size: 0.95rem; }
+    .btn-primary { background: #008BD0; color: #fff; border: 1px solid #008BD0; }
+    .btn-primary:hover { background: #0077b5; }
+    .btn-outline { border: 1px solid rgba(255,255,255,0.25); color: #fff; }
+    .btn-outline:hover { background: rgba(255,255,255,0.08); }
+  </style>
+</head>
+<body>
+  <div class="err-box">
+    <div class="err-code">404</div>
+    <h1>Page Not Found</h1>
+    <p>The page you requested could not be found or has moved. Explore our career programs or return to the campus homepage.</p>
+    <div class="btn-group">
+      <a href="/" class="btn btn-primary">Return to Homepage</a>
+      <a href="/courses" class="btn btn-outline">Explore Courses</a>
+      <a href="/contact" class="btn btn-outline">Contact Us</a>
+    </div>
+  </div>
+</body>
+</html>`);
 });
 
 // Start Server

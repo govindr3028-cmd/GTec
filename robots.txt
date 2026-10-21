@@ -7,6 +7,7 @@ Disallow: /admin
 Disallow: /admin.html
 Disallow: /api/admin/
 Disallow: /data/
+Disallow: /scripts/
 
 # Sitemap location
 Sitemap: https://gtectripunithura.com/sitemap.xml
