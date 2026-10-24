@@ -5,6 +5,7 @@
 
 function initAll() {
   initNavbar();
+  initMobileExperience();
   initStatsCounters();
   initHeroVideo();
   initHeroEventLinks();
@@ -38,9 +39,34 @@ function initNavbar() {
     } else {
       header.classList.remove('scrolled');
     }
-  });
+  }, { passive: true });
 
   if (toggleBtn && navMenu) {
+    // 1. Mobile Backdrop Dimmer
+    let backdrop = document.querySelector('.nav-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.className = 'nav-backdrop';
+      document.body.appendChild(backdrop);
+    }
+
+    const closeMenu = () => {
+      navMenu.classList.remove('open');
+      backdrop.classList.remove('open');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-open');
+    };
+
+    const openMenu = () => {
+      navMenu.classList.add('open');
+      backdrop.classList.add('open');
+      toggleBtn.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('menu-open');
+    };
+
+    backdrop.addEventListener('click', closeMenu);
+
+    // 2. Close Button inside Mobile Drawer
     if (!navMenu.querySelector('.mobile-close-btn')) {
       const closeBtn = document.createElement('button');
       closeBtn.className = 'mobile-close-btn';
@@ -48,21 +74,23 @@ function initNavbar() {
       closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
       closeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        navMenu.classList.remove('open');
-        toggleBtn.setAttribute('aria-expanded', 'false');
+        closeMenu();
       });
       navMenu.appendChild(closeBtn);
     }
 
-    toggleBtn.addEventListener('click', () => {
-      const isOpen = navMenu.classList.toggle('open');
-      toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (navMenu.classList.contains('open')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     });
 
-    document.addEventListener('click', (e) => {
-      if (!navMenu.contains(e.target) && !toggleBtn.contains(e.target) && navMenu.classList.contains('open')) {
-        navMenu.classList.remove('open');
-        toggleBtn.setAttribute('aria-expanded', 'false');
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navMenu.classList.contains('open')) {
+        closeMenu();
       }
     });
 
@@ -71,8 +99,7 @@ function initNavbar() {
     allLinks.forEach(link => {
       link.addEventListener('click', () => {
         if (window.innerWidth <= 768 && !link.parentElement.classList.contains('has-dropdown')) {
-          navMenu.classList.remove('open');
-          toggleBtn.setAttribute('aria-expanded', 'false');
+          closeMenu();
         }
       });
     });
@@ -90,6 +117,43 @@ function initNavbar() {
       }
     });
   }
+}
+
+/* -------------------------------------------------------------
+   Native Mobile App Bottom Bar & Quick Actions
+------------------------------------------------------------- */
+function initMobileExperience() {
+  if (document.querySelector('.mobile-bottom-bar')) return;
+
+  const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
+  
+  const bottomBar = document.createElement('nav');
+  bottomBar.className = 'mobile-bottom-bar';
+  bottomBar.setAttribute('aria-label', 'Mobile Quick Actions');
+  bottomBar.innerHTML = `
+    <a href="/" class="bottom-bar-item ${currentPath === '/' ? 'active' : ''}">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    <a href="/courses" class="bottom-bar-item ${currentPath.includes('/courses') ? 'active' : ''}">
+      <i class="fa-solid fa-book-open"></i>
+      <span>Courses</span>
+    </a>
+    <a href="https://wa.me/918289869975?text=Hi%20G-TEC%20Tripunithura,%20I%20am%20interested%20in%20courses." target="_blank" rel="noopener noreferrer" class="bottom-bar-item whatsapp">
+      <i class="fa-brands fa-whatsapp"></i>
+      <span>WhatsApp</span>
+    </a>
+    <a href="tel:+918289869975" class="bottom-bar-item">
+      <i class="fa-solid fa-phone"></i>
+      <span>Call</span>
+    </a>
+    <button type="button" class="bottom-bar-item enquiry-btn" onclick="openEnquiryModal('Mobile Bottom Bar')">
+      <i class="fa-solid fa-paper-plane"></i>
+      <span>Enquire</span>
+    </button>
+  `;
+
+  document.body.appendChild(bottomBar);
 }
 
 /* -------------------------------------------------------------

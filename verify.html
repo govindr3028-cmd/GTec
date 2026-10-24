@@ -203,7 +203,7 @@
               <div style="display: flex; align-items: center; gap: 10px; color: #16a34a; font-weight: 800; font-size: 1.15rem; margin-bottom: 16px;">
                 <i class="fa-solid fa-circle-check" style="font-size: 1.4rem;"></i> Authenticated & Valid
               </div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 0.9rem;">
+              <div class="verify-result-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 0.9rem;">
                 <div><strong style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; display: block;">Student Name</strong> ${c.studentName}</div>
                 <div><strong style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; display: block;">Registration No.</strong> <code>${c.certNumber}</code></div>
                 <div><strong style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; display: block;">Program Name</strong> ${c.course}</div>
@@ -233,5 +233,6 @@
       }
     });
   </script>
+  <script src="js/main.js" defer></script>
 </body>
 </html>

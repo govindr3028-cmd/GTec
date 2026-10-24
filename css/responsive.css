@@ -1,11 +1,59 @@
 /* ==========================================================================
-   Responsive Stylesheet for G-TEC Tripunithura Website
+   Comprehensive Mobile & Tablet Responsive Stylesheet
+   G-TEC Computer Education - Tripunithura Campus
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   Universal Mobile & Accessibility Foundations
+   -------------------------------------------------------------------------- */
+html, body {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  -webkit-text-size-adjust: 100%;
+}
+
+body.menu-open {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
+/* Base Form Inputs (Strict 16px to prevent iOS Safari auto-zoom) */
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="search"],
+select,
+textarea {
+  font-size: 16px !important;
+}
+
+/* Smooth Tap Targets */
+button, a, input, select {
+  touch-action: manipulation;
+}
+
+/* --------------------------------------------------------------------------
+   Desktop & Tablet Baseline (Large Screen Enhancements)
+   -------------------------------------------------------------------------- */
+@media (min-width: 769px) {
+  .mobile-bottom-bar {
+    display: none !important;
+  }
+  .nav-backdrop {
+    display: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   1. Large Tablets & Small Laptops (max-width: 1024px)
+   -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .hero-overview-grid {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 36px;
     text-align: center;
   }
 
@@ -38,7 +86,7 @@
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
+    gap: 20px;
   }
 
   .stat-item:nth-child(2)::after {
@@ -47,14 +95,40 @@
 
   .why-us-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 
   .courses-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
   }
 
-  .affiliations-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .affiliations-grid,
+  .affiliation-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .awards-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .about-story-grid {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
+    text-align: center;
+  }
+
+  .about-story-grid img {
+    max-width: 540px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .about-vision-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 
   .placed-students-grid {
@@ -77,31 +151,151 @@
   }
 }
 
+/* --------------------------------------------------------------------------
+   2. Tablet Portrait & Mobile Devices (max-width: 768px)
+   -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
-  .topbar {
-    display: none;
+  body {
+    padding-bottom: 68px !important; /* Space for the bottom sticky app bar */
   }
 
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .section {
+    padding: 44px 0;
+  }
+
+  .section-header {
+    margin-bottom: 24px;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .section-desc {
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  /* Page Banners on Subpages */
+  .page-banner {
+    padding: 42px 0 34px;
+  }
+
+  .banner-badge-pill {
+    font-size: 0.72rem;
+    padding: 5px 14px;
+    margin-bottom: 12px;
+  }
+
+  .banner-main-title {
+    font-size: 1.75rem !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.3px;
+    margin-bottom: 10px;
+  }
+
+  .banner-lead-text {
+    font-size: 0.92rem !important;
+    line-height: 1.6 !important;
+    padding: 0 4px;
+  }
+
+  /* Header & Navigation Bar */
+  .topbar {
+    display: none !important;
+  }
+
+  .main-header {
+    background: rgba(255, 255, 255, 0.96);
+  }
+
+  .nav-container {
+    padding: 10px 16px;
+  }
+
+  .logo-wrapper {
+    gap: 10px;
+  }
+
+  .logo-img {
+    height: 40px;
+    width: auto;
+  }
+
+  .branch-tag {
+    padding-left: 8px;
+    border-left-width: 1.5px;
+  }
+
+  .branch-tag .branch-name {
+    font-size: 0.88rem;
+    letter-spacing: -0.2px;
+  }
+
+  .branch-tag .branch-sub {
+    font-size: 0.62rem;
+    letter-spacing: 0.4px;
+  }
+
+  .header-cta-group {
+    gap: 8px;
+  }
+
+  /* Hide "Free Demo Class" in header to eliminate header clutter on phones */
+  .header-cta-group .btn-primary {
+    display: none !important;
+  }
+
+  /* Compact "Enquire Now" button in mobile header */
+  .header-cta-group .btn-secondary {
+    padding: 7px 13px !important;
+    font-size: 0.82rem !important;
+    border-radius: 20px;
+    gap: 5px;
+  }
+
+  .mobile-toggle {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 8px;
+    background: rgba(0, 139, 208, 0.08);
+    color: var(--dark);
+    font-size: 1.25rem;
+    cursor: pointer;
+    border: none;
+  }
+
+  /* Slide-Out Navigation Drawer */
   .navbar-nav {
     position: fixed;
     top: 0;
     right: -100%;
-    width: 300px;
-    max-width: 85vw;
+    width: 290px;
+    max-width: 82vw;
     height: 100vh;
     height: 100dvh;
     background: linear-gradient(180deg, #0A192F 0%, #0B132B 55%, #102A43 100%);
     border-left: 1px solid rgba(255, 255, 255, 0.12);
     flex-direction: column;
     align-items: stretch;
-    padding: 75px 20px 30px;
-    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
-    transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 1050;
-    gap: 6px;
+    padding: 70px 18px 85px;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.65);
+    transition: right 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1060;
+    gap: 4px;
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    -webkit-overflow-scrolling: touch;
   }
 
   .navbar-nav.open {
@@ -109,16 +303,16 @@
   }
 
   .navbar-nav::before {
-    content: 'Navigation';
+    content: 'Navigation Menu';
     display: block;
     font-family: 'Outfit', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: #38bdf8;
     padding-bottom: 12px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     width: 100%;
   }
@@ -136,15 +330,15 @@
   .navbar-nav .nav-link {
     width: 100%;
     font-family: 'Outfit', sans-serif;
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 600;
     color: #ffffff;
-    padding: 11px 14px;
+    padding: 10px 12px;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
   }
 
   .navbar-nav .nav-link::after {
@@ -154,7 +348,7 @@
   .navbar-nav .nav-link:hover {
     color: #38bdf8;
     background: rgba(255, 255, 255, 0.06);
-    padding-left: 18px;
+    padding-left: 16px;
   }
 
   .navbar-nav .nav-link.active {
@@ -162,47 +356,17 @@
     background: rgba(0, 139, 208, 0.18);
     border-left: 3px solid #008BD0;
     font-weight: 700;
-    padding-left: 14px;
+    padding-left: 12px;
   }
 
   .navbar-nav .nav-link i {
     color: #38bdf8;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     transition: transform 0.25s ease;
   }
 
   .navbar-nav .nav-item.dropdown-open > .nav-link i {
     transform: rotate(180deg);
-  }
-
-  .mobile-toggle {
-    display: block;
-  }
-
-  .mobile-close-btn {
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    width: 38px;
-    height: 38px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    cursor: pointer;
-    color: #ffffff;
-    transition: all 0.25s ease;
-    z-index: 10;
-  }
-
-  .mobile-close-btn:hover {
-    background: var(--secondary);
-    border-color: var(--secondary);
-    color: #ffffff;
-    transform: rotate(90deg);
   }
 
   .navbar-nav .dropdown-menu {
@@ -215,23 +379,23 @@
     width: 100%;
     background: rgba(5, 14, 28, 0.65);
     border-radius: 10px;
-    padding: 8px 6px;
-    margin: 6px 0 10px;
+    padding: 6px;
+    margin: 4px 0 8px;
     display: none;
   }
 
   .navbar-nav .nav-item.dropdown-open .dropdown-menu {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
   }
 
   .navbar-nav .dropdown-item {
     font-family: 'Outfit', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 500;
     color: #cbd5e1;
-    padding: 10px 14px;
+    padding: 9px 12px;
     border-radius: 6px;
     display: flex;
     align-items: center;
@@ -242,88 +406,163 @@
   .navbar-nav .dropdown-item:hover {
     background: rgba(0, 139, 208, 0.2);
     color: #ffffff;
-    padding-left: 18px;
+    padding-left: 16px;
   }
 
-  .navbar-nav .dropdown-item i {
+  .mobile-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    color: #ffffff;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.25s ease;
+  }
+
+  .mobile-close-btn:hover {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    transform: rotate(90deg);
+  }
+
+  /* Nav Backdrop Dimmer */
+  .nav-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 25, 47, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1055;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .nav-backdrop.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* --------------------------------------------------------------------------
+     Mobile App Bottom Navigation Bar
+     -------------------------------------------------------------------------- */
+  .mobile-bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: rgba(10, 25, 47, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 1020;
+    padding: 0 4px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .bottom-bar-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    text-decoration: none;
+    color: #94a3b8;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 6px 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .bottom-bar-item i {
+    font-size: 1.15rem;
+    transition: transform 0.2s ease;
+  }
+
+  .bottom-bar-item:hover,
+  .bottom-bar-item.active {
     color: #38bdf8;
-    font-size: 0.85rem;
   }
 
-  .hero-title {
-    font-size: 2.3rem;
+  .bottom-bar-item.whatsapp i {
+    color: #25D366;
   }
 
-  .section-title {
-    font-size: 1.9rem;
+  .bottom-bar-item.enquiry-btn i {
+    color: var(--secondary);
   }
 
-  .courses-grid {
-    grid-template-columns: 1fr;
+  /* Floating Action Buttons: Position above the bottom bar without overlap */
+  .floating-actions-container {
+    bottom: 74px !important;
+    right: 14px !important;
+    gap: 8px !important;
   }
 
-  .why-us-grid {
-    grid-template-columns: 1fr;
+  .floating-btn {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 1.15rem !important;
   }
 
-  .testimonials-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .contact-card-wrapper {
-    grid-template-columns: 1fr;
-  }
-
-  .contact-info-panel, .contact-form-panel {
-    padding: 30px 20px;
-  }
-
-  .form-grid-2 {
-    grid-template-columns: 1fr;
-  }
-
-  .affiliations-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .footer-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .quiz-options-grid {
-    grid-template-columns: 1fr;
+  /* Hide duplicate Call and WhatsApp float buttons on mobile (they are in bottom bar) */
+  .floating-actions-container .btn-call-float,
+  .floating-actions-container .btn-whatsapp-float {
+    display: none !important;
   }
 
   .sticky-enquire-tab {
-    display: none;
+    display: none !important;
   }
 
+  /* --------------------------------------------------------------------------
+     Fullscreen Campus Video Hero Section (Mobile Optimized)
+     -------------------------------------------------------------------------- */
   .hero-fullscreen-video {
-    height: calc(100vh - 65px);
-    height: calc(100svh - 65px);
-    min-height: 460px;
+    height: calc(100vh - 60px);
+    height: calc(100svh - 60px);
+    min-height: 400px;
   }
 
   .fullscreen-video-top-tag {
-    top: 14px;
-    left: 14px;
-    font-size: 0.78rem;
-    padding: 6px 14px;
+    top: 12px;
+    left: 12px;
+    font-size: 0.72rem;
+    padding: 5px 12px;
   }
 
   .fullscreen-video-bar-inner {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 10px;
   }
 
   .fullscreen-video-heading {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
+    line-height: 1.25;
   }
 
   .fullscreen-campus-pill {
-    font-size: 0.72rem;
-    padding: 4px 10px;
+    font-size: 0.7rem;
+    padding: 3px 9px;
   }
 
   .fullscreen-video-controls {
@@ -331,55 +570,330 @@
   }
 
   .video-control-pill {
-    padding: 6px 12px;
-    font-size: 0.75rem;
+    padding: 5px 10px;
+    font-size: 0.72rem;
   }
 
   .scroll-text {
-    font-size: 0.78rem;
-    padding: 5px 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-title {
-    font-size: 1.9rem;
-  }
-
-  .hero-fullscreen-video {
-    min-height: 400px;
-  }
-
-  .fullscreen-video-heading {
-    font-size: 1.1rem;
-  }
-
-  .fullscreen-video-top-tag {
     font-size: 0.72rem;
     padding: 5px 12px;
   }
 
-  .spotlight-stat-box {
-    padding: 12px 14px;
+  /* --------------------------------------------------------------------------
+     Hero Overview Section (Home Page)
+     -------------------------------------------------------------------------- */
+  .hero-overview-section {
+    padding: 35px 0 20px;
+  }
+
+  .hero-pill {
+    font-size: 0.75rem;
+    padding: 4px 12px;
+  }
+
+  .hero-title {
+    font-size: 1.85rem;
+    line-height: 1.22;
+  }
+
+  .hero-lead {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .hero-search-box {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+    padding: 4px 6px 4px 14px;
+  }
+
+  .hero-search-box input {
+    font-size: 16px; /* Prevents iOS auto-zoom */
+  }
+
+  .hero-search-box button {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 0.92rem;
+  }
+
+  .hero-badges-strip {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    text-align: left;
+  }
+
+  .hero-feature-item {
+    font-size: 0.78rem;
+    gap: 6px;
+  }
+
+  /* --------------------------------------------------------------------------
+     Course Filters: Native Horizontal App Chips
+     -------------------------------------------------------------------------- */
+  .courses-filter-bar {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px !important;
+    padding: 4px 4px 14px !important;
+    margin-bottom: 22px !important;
+    justify-content: flex-start !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .courses-filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 8px 16px;
+    font-size: 0.84rem;
+    border-radius: var(--radius-full);
+  }
+
+  /* Course Grid & Cards */
+  .courses-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .course-card {
+    border-radius: var(--radius-md);
+  }
+
+  .course-card-thumb {
+    height: 190px;
+  }
+
+  .course-card-body {
+    padding: 20px 18px;
+  }
+
+  .course-card-title {
+    font-size: 1.18rem;
+  }
+
+  .course-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .course-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* --------------------------------------------------------------------------
+     Subpages Grid Reflows (About, Affiliation, Awards, Gallery, Contact)
+     -------------------------------------------------------------------------- */
+  .about-story-grid,
+  div[style*="display: grid"][style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 25px !important;
+  }
+
+  .about-vision-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .about-vision-grid > div {
+    padding: 24px 18px !important;
+  }
+
+  .affiliation-cards-grid,
+  div[style*="grid-template-columns: repeat(3, 1fr)"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .awards-cards-grid,
+  div[style*="grid-template-columns: repeat(4, 1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  .why-us-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .feature-box {
+    padding: 22px 18px;
+  }
+
+  .recruiters-grid {
+    gap: 10px !important;
+  }
+
+  .recruiter-badge {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.92rem;
+    padding: 10px 14px;
+  }
+
+  .contact-card-wrapper {
+    grid-template-columns: 1fr;
+    border-radius: 14px;
+  }
+
+  .contact-info-panel,
+  .contact-form-panel {
+    padding: 24px 18px;
+  }
+
+  .form-grid-2 {
+    grid-template-columns: 1fr;
     gap: 12px;
   }
 
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .gallery-filter-chips {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    gap: 8px !important;
+    padding-bottom: 10px !important;
+    scrollbar-width: none;
+  }
+
+  .gallery-filter-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gallery-cat-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+    padding-bottom: 15px;
+  }
+
+  /* Modals (Enquiry & Course Details) */
+  .modal-backdrop {
+    padding: 12px;
+  }
+
+  .modal-dialog {
+    max-width: 96vw;
+    width: 100%;
+    margin: 8px auto;
+    max-height: 92vh;
+    border-radius: 14px;
+  }
+
+  .modal-header-custom {
+    padding: 16px 18px;
+  }
+
+  .modal-body-custom {
+    padding: 18px 16px;
+    max-height: calc(92vh - 65px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-course-stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    padding: 10px !important;
+  }
+
+  .quiz-options-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Small Mobile Devices (max-width: 480px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.6rem;
+  }
+
+  .hero-fullscreen-video {
+    min-height: 380px;
+  }
+
+  .fullscreen-video-heading {
+    font-size: 1.05rem;
+  }
+
+  .fullscreen-video-top-tag {
+    font-size: 0.68rem;
+    padding: 4px 10px;
+  }
+
+  .spotlight-stat-box {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
   .spotlight-stat-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 1.1rem;
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
   }
 
   .spotlight-stat-content .spotlight-num {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
   }
 
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .stat-item::after {
     display: none;
+  }
+
+  .hero-badges-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .awards-cards-grid,
+  div[style*="grid-template-columns: repeat(4, 1fr)"] {
+    grid-template-columns: 1fr !important;
   }
 
   .placed-students-grid {
@@ -402,5 +916,43 @@
     justify-content: center;
     padding: 9px 14px;
     font-size: 0.82rem;
+  }
+
+  .verify-result-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Ultra-Compact Devices (max-width: 360px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 360px) {
+  .nav-container {
+    padding: 8px 12px;
+  }
+
+  .logo-img {
+    height: 34px;
+  }
+
+  .branch-tag .branch-name {
+    font-size: 0.78rem;
+  }
+
+  .branch-tag .branch-sub {
+    font-size: 0.58rem;
+  }
+
+  .header-cta-group .btn-secondary {
+    padding: 6px 10px !important;
+    font-size: 0.75rem !important;
+  }
+
+  .hero-title {
+    font-size: 1.45rem;
+  }
+
+  .banner-main-title {
+    font-size: 1.45rem !important;
   }
 }
