@@ -128,13 +128,15 @@ button, a, input, select {
 
   .affiliations-grid,
   .affiliation-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
   }
 
   .awards-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
   }
 
   .about-story-grid {

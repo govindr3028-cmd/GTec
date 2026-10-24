@@ -1726,6 +1726,71 @@ ul, ol {
 }
 
 /* ==========================================================================
+   Affiliation Page Grids & Award Cards
+   ========================================================================== */
+.affiliation-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+.awards-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.award-card,
+.awards-cards-grid > div {
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.award-card:hover,
+.awards-cards-grid > div:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.award-card img,
+.awards-cards-grid > div img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.award-card:hover img,
+.awards-cards-grid > div:hover img {
+  transform: scale(1.04);
+}
+
+/* ==========================================================================
+   About Page Grids
+   ========================================================================== */
+.about-story-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.about-vision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+/* ==========================================================================
    Director's / Center Head's Message
    ========================================================================== */
 .message-section {
