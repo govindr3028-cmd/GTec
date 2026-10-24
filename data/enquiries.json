@@ -1,16 +1,16 @@
 [
   {
-    "id": "ENQ-30634",
-    "name": "SEO Audit Test",
+    "id": "ENQ-54453",
+    "name": "SEO Integrity Verification",
     "phone": "9876543210",
-    "email": "",
+    "email": "test@example.com",
     "course": "Python Full Stack",
-    "comments": "Automated SEO audit validation",
+    "comments": "Verification post implementation",
     "mode": "Classroom / Lab",
     "status": "New",
     "notes": "",
     "ip": "::1",
-    "createdAt": "2026-10-19T10:12:10.634+00:00",
-    "updatedAt": "2026-10-19T10:12:10.634+00:00"
+    "createdAt": "2026-10-23T13:27:34.453+00:00",
+    "updatedAt": "2026-10-23T13:27:34.453+00:00"
   }
 ]

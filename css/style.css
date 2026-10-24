@@ -1954,6 +1954,7 @@ ul, ol {
   justify-content: space-between;
 }
 
+.contact-info-panel h2,
 .contact-info-panel h3 {
   color: #ffffff;
   font-size: 2rem;

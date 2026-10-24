@@ -29,11 +29,16 @@ publicFiles.forEach(file => {
     }
 
     // Strip query strings or hash
-    const cleanLink = link.split('?')[0].split('#')[0];
+    let cleanLink = link.split('?')[0].split('#')[0];
     if (!cleanLink) continue;
+    if (cleanLink === '/') cleanLink = 'index.html';
 
-    // Check if relative file exists
-    const resolvedPath = path.join(__dirname, '..', cleanLink);
+    // If clean URL without extension, check for .html file
+    let resolvedPath = path.join(__dirname, '..', cleanLink);
+    if (!fs.existsSync(resolvedPath) && !path.extname(cleanLink)) {
+      resolvedPath = path.join(__dirname, '..', cleanLink + '.html');
+    }
+
     if (!fs.existsSync(resolvedPath)) {
       console.error(`[BROKEN LINK] in ${file}: "${link}" -> File not found: ${cleanLink}`);
       brokenLinksCount++;
