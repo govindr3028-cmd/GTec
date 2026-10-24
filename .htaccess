@@ -1,0 +1,100 @@
+# ==============================================================================
+# G-TEC Computer Education - Tripunithura Campus
+# Production Apache / LiteSpeed Configuration for Hostinger Shared Hosting
+# ==============================================================================
+
+# Enable Rewrite Engine
+<IfModule mod_rewrite.c>
+    Options -MultiViews +FollowSymLinks
+    RewriteEngine On
+    RewriteBase /
+
+    # 1. Force HTTPS (Hostinger SSL)
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # 2. Prevent direct access to sensitive server and data files
+    RewriteRule ^\.env - [F,L]
+    RewriteRule ^data/ - [F,L]
+    RewriteRule ^scratch/ - [F,L]
+    RewriteRule ^scripts/ - [F,L]
+    RewriteRule ^node_modules/ - [F,L]
+    RewriteRule ^package(-lock)?\.json$ - [F,L]
+    RewriteRule ^(server|db)\.js$ - [F,L]
+    RewriteRule ^supabase_schema\.sql$ - [F,L]
+
+    # 3. Strip trailing slashes from URLs (except actual directories)
+    # This prevents relative assets like css/style.css from breaking
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+    # 4. Route API Endpoints to PHP Handlers
+    RewriteRule ^api/enquiries/?$ api/enquiry.php [L,QSA]
+    RewriteRule ^api/contact/?$ api/contact.php [L,QSA]
+    RewriteRule ^api/verify/([^/]+)/?$ api/verify.php?cert=$1 [L,QSA]
+
+    # 5. Core Public Page Routes (Explicit Clean URLs)
+    RewriteRule ^about/?$ about.html [L,QSA]
+    RewriteRule ^courses/?$ courses.html [L,QSA]
+    RewriteRule ^placement/?$ placement.html [L,QSA]
+    RewriteRule ^affiliation/?$ affiliation.html [L,QSA]
+    RewriteRule ^gallery/?$ gallery.html [L,QSA]
+    RewriteRule ^contact/?$ contact.html [L,QSA]
+    RewriteRule ^verify/?$ verify.html [L,QSA]
+    RewriteRule ^admin/?$ admin.html [L,QSA]
+
+    # 6. Generic Clean URLs: Rewrite extensionless requests to matching .html files
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{DOCUMENT_ROOT}/$1.html -f [OR]
+    RewriteCond %{REQUEST_FILENAME}.html -f
+    RewriteRule ^(.*)$ $1.html [L,QSA]
+</IfModule>
+
+# Set Default Directory Index
+DirectoryIndex index.html index.php
+
+# Custom Error Pages
+ErrorDocument 404 /index.html
+
+
+# Block access to hidden dotfiles and configuration files
+<FilesMatch "^\.(env|git|vscode|agents)|(package.*\.json|skills-lock\.json)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Gzip / Deflate Compression for Speed
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Browser Caching Headers
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType video/mp4 "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
