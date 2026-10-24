@@ -33,13 +33,15 @@ function initNavbar() {
   const toggleBtn = document.querySelector('.mobile-toggle');
   const navMenu = document.querySelector('.navbar-nav');
   
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 40) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-  }, { passive: true });
+  if (header) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    }, { passive: true });
+  }
 
   if (toggleBtn && navMenu) {
     // 1. Mobile Backdrop Dimmer
@@ -50,10 +52,22 @@ function initNavbar() {
       document.body.appendChild(backdrop);
     }
 
+    const updateToggleIcon = (isOpen) => {
+      const icon = toggleBtn.querySelector('i');
+      if (icon) {
+        if (isOpen) {
+          icon.className = 'fa-solid fa-xmark';
+        } else {
+          icon.className = 'fa-solid fa-bars';
+        }
+      }
+    };
+
     const closeMenu = () => {
       navMenu.classList.remove('open');
       backdrop.classList.remove('open');
       toggleBtn.setAttribute('aria-expanded', 'false');
+      updateToggleIcon(false);
       document.body.classList.remove('menu-open');
     };
 
@@ -61,30 +75,46 @@ function initNavbar() {
       navMenu.classList.add('open');
       backdrop.classList.add('open');
       toggleBtn.setAttribute('aria-expanded', 'true');
+      updateToggleIcon(true);
       document.body.classList.add('menu-open');
     };
 
-    backdrop.addEventListener('click', closeMenu);
+    backdrop.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeMenu();
+    });
 
     // 2. Close Button inside Mobile Drawer
     if (!navMenu.querySelector('.mobile-close-btn')) {
       const closeBtn = document.createElement('button');
+      closeBtn.type = 'button';
       closeBtn.className = 'mobile-close-btn';
       closeBtn.setAttribute('aria-label', 'Close navigation menu');
       closeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
       closeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         e.stopPropagation();
         closeMenu();
       });
-      navMenu.appendChild(closeBtn);
+      navMenu.prepend(closeBtn);
     }
 
     toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       e.stopPropagation();
       if (navMenu.classList.contains('open')) {
         closeMenu();
       } else {
         openMenu();
+      }
+    });
+
+    // Close menu when clicking anywhere outside of the drawer & toggle button
+    document.addEventListener('click', (e) => {
+      if (navMenu.classList.contains('open')) {
+        if (!navMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+          closeMenu();
+        }
       }
     });
 
@@ -94,27 +124,20 @@ function initNavbar() {
       }
     });
 
-    // Close menu when non-dropdown links are clicked on mobile
+    // Close menu on navigation, or toggle dropdowns
     const allLinks = navMenu.querySelectorAll('a.nav-link, a.dropdown-item');
     allLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        if (window.innerWidth <= 768 && !link.parentElement.classList.contains('has-dropdown')) {
-          closeMenu();
+      link.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+          if (link.parentElement.classList.contains('has-dropdown')) {
+            e.preventDefault();
+            e.stopPropagation();
+            link.parentElement.classList.toggle('dropdown-open');
+          } else {
+            closeMenu();
+          }
         }
       });
-    });
-
-    const dropdownItems = document.querySelectorAll('.nav-item.has-dropdown');
-    dropdownItems.forEach(item => {
-      const link = item.querySelector('.nav-link');
-      if (link) {
-        link.addEventListener('click', (e) => {
-          if (window.innerWidth <= 768) {
-            e.preventDefault();
-            item.classList.toggle('dropdown-open');
-          }
-        });
-      }
     });
   }
 }
