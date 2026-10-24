@@ -1129,12 +1129,40 @@
         if (cached) {
           try {
             const parsed = JSON.parse(cached);
-            if (Array.isArray(parsed)) {
+            if (Array.isArray(parsed) && parsed.length > 0) {
               adminEventLinks = parsed.filter(l => l && l.id !== 'EVT-1001' && l.id !== 'EVT-1002');
-              localStorage.setItem('gtec_event_links_cache', JSON.stringify(adminEventLinks));
             }
           } catch (err) {}
         }
+      }
+
+      // If still empty, seed with the standard Examination and Event links
+      if (!adminEventLinks || adminEventLinks.length === 0) {
+        adminEventLinks = [
+          {
+            id: 'EVT-43342',
+            title: 'G-TEC National Scholarship Exam 2026',
+            url: 'https://gteceducation.com/scholarship',
+            category: 'Examination',
+            badgeText: 'Registrations Open',
+            date: 'Upcoming',
+            description: 'Online scholarship exam with up to 50% fee concession for IT & Accounting.',
+            active: true
+          },
+          {
+            id: 'EVT-65334',
+            title: 'Kolenchery Campus Event & Workshop',
+            url: 'https://gteckolenchery.com/',
+            category: 'Campus Event',
+            badgeText: 'Registrations Open',
+            date: 'Upcoming',
+            description: 'Official campus event and student admission guidance desk.',
+            active: true
+          }
+        ];
+        try {
+          localStorage.setItem('gtec_event_links_cache', JSON.stringify(adminEventLinks));
+        } catch (e) {}
       }
 
       updateEventLinksStats();

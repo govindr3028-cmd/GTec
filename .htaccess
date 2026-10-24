@@ -29,6 +29,13 @@
     RewriteRule ^(.*)/$ /$1 [L,R=301]
 
     # 4. Route API Endpoints to PHP Handlers
+    RewriteRule ^api/(?:admin/)?event-links/([^/]+)/?$ api/event-links.php?id=$1 [L,QSA]
+    RewriteRule ^api/(?:admin/)?event-links/?$ api/event-links.php [L,QSA]
+    RewriteRule ^api/(?:admin/)?courses/([^/]+)/?$ api/courses.php?id=$1 [L,QSA]
+    RewriteRule ^api/(?:admin/)?courses/?$ api/courses.php [L,QSA]
+    RewriteRule ^api/admin/enquiries/([^/]+)/?$ api/enquiry.php?id=$1 [L,QSA]
+    RewriteRule ^api/admin/enquiries/?$ api/enquiry.php [L,QSA]
+    RewriteRule ^api/enquiries/([^/]+)/?$ api/enquiry.php?id=$1 [L,QSA]
     RewriteRule ^api/enquiries/?$ api/enquiry.php [L,QSA]
     RewriteRule ^api/contact/?$ api/contact.php [L,QSA]
     RewriteRule ^api/verify/([^/]+)/?$ api/verify.php?cert=$1 [L,QSA]
@@ -88,6 +95,7 @@ ErrorDocument 404 /index.html
     ExpiresActive On
     ExpiresDefault "access plus 1 month"
     ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType application/json "access plus 0 seconds"
     ExpiresByType text/css "access plus 1 month"
     ExpiresByType application/javascript "access plus 1 month"
     ExpiresByType image/jpeg "access plus 1 year"
@@ -98,3 +106,13 @@ ErrorDocument 404 /index.html
     ExpiresByType video/mp4 "access plus 1 year"
     ExpiresByType font/woff2 "access plus 1 year"
 </IfModule>
+
+<FilesMatch "\.php$">
+    <IfModule mod_expires.c>
+        ExpiresActive Off
+    </IfModule>
+    <IfModule mod_headers.c>
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+    </IfModule>
+</FilesMatch>

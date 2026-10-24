@@ -365,15 +365,29 @@ async function initHeroEventLinks() {
     } catch (e) {}
   }
   if (initialLinks.length === 0) {
-    initialLinks = [{
-      id: "EVT-43342",
-      title: "G-TEC National Scholarship Exam 2026",
-      url: "https://gteceducation.com/scholarship",
-      category: "Examination",
-      badgeText: "Registrations Open",
-      description: "Online scholarship exam with up to 50% fee concession for IT & Accounting.",
-      active: true
-    }];
+    initialLinks = [
+      {
+        id: "EVT-43342",
+        title: "G-TEC National Scholarship Exam 2026",
+        url: "https://gteceducation.com/scholarship",
+        category: "Examination",
+        badgeText: "Registrations Open",
+        description: "Online scholarship exam with up to 50% fee concession for IT & Accounting.",
+        active: true
+      },
+      {
+        id: "EVT-65334",
+        title: "Kolenchery Campus Event & Workshop",
+        url: "https://gteckolenchery.com/",
+        category: "Campus Event",
+        badgeText: "Registrations Open",
+        description: "Official campus event and student admission guidance desk.",
+        active: true
+      }
+    ];
+    try {
+      localStorage.setItem('gtec_event_links_cache', JSON.stringify(initialLinks));
+    } catch (e) {}
   }
   let currentLinksSig = initialLinks.map(l => `${l.id}_${l.title}_${l.active}`).join('|');
   renderEventLinks(initialLinks);
