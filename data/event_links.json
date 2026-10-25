@@ -1,17 +1,5 @@
 [
   {
-    "id": "EVT-43342",
-    "title": "G-TEC National Scholarship Exam 2026",
-    "url": "https://gteceducation.com/scholarship",
-    "category": "Examination",
-    "badgeText": "Registrations Open",
-    "date": "Upcoming",
-    "description": "Online scholarship exam with up to 50% fee concession for IT & Accounting.",
-    "active": true,
-    "createdAt": "2026-10-15T10:00:00.000Z",
-    "updatedAt": "2026-10-24T17:32:39.623Z"
-  },
-  {
     "id": "EVT-65334",
     "title": "Kolenchery Campus Event & Workshop",
     "url": "https://gteckolenchery.com/",
