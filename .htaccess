@@ -116,3 +116,13 @@ ErrorDocument 404 /index.html
         Header set Pragma "no-cache"
     </IfModule>
 </FilesMatch>
+
+# Favicon immediate refresh for browsers and search engine crawlers
+<FilesMatch "^(favicon\.ico|favicon.*\.png|apple-touch-icon.*\.png)$">
+    <IfModule mod_expires.c>
+        ExpiresActive Off
+    </IfModule>
+    <IfModule mod_headers.c>
+        Header set Cache-Control "public, max-age=0, must-revalidate"
+    </IfModule>
+</FilesMatch>
